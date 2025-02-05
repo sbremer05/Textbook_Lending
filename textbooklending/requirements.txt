@@ -1,7 +1,0 @@
-python-3.10.12
-Django>=4.2,<5.0
-gunicorn  # Production WSGI server
-django-on-heroku  # If using django-on-heroku
-dj-database-url  # If using Postgres
-psycopg2-binary  # PostgreSQL adapter for Django
-whitenoise  # For serving static files
