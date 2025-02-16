@@ -9,5 +9,10 @@
     {% load socialaccount %}
     <h2>Google Login</h2>
     <a href = "{% provider_login_url 'google' %}?next=/">Log In With Google</a>
+
+    {% if user.is_authenticated %}
+    <h3>You are signed in as {{user.email}}</h3>
+    <a href="logout">Log Out</a>
+    {% endif %}
 </body>
 </html>
