@@ -17,7 +17,7 @@
             <button type="submit" class="btn btn-danger">Log Out</button>
         </form>
     {%  else %}
-        <a href ="{% provider_login_url 'google' %}?next=/" class="btn btn-primary">Log In With Google</a>
+        <a href ="{% provider_login_url 'google' %}?next=/redirect-after-login" class="btn btn-primary">Log In With Google</a>
     {% endif %}
 </body>
 </html>
