@@ -8,11 +8,30 @@ from django.http import HttpResponse
 # Create your views here.
 
 def home(request):
-    return render(request, "home.html")
+    print(f"User authenticated? {request.user.is_authenticated}")  # Debugging
 
+    if request.user.is_authenticated:
+        print(f"User {request.user.username} is logged in!")  # Debugging
+        print("Redirecting to dashboard...")  # Debugging
+        return redirect('dashboard')  # Force redirect if logged in
+
+    return render(request, "login/home.html")
+
+# Logout view
 def logout_view(request):
     logout(request)
     return redirect("/")
+
+# Dashboard view with role-based redirection
+@login_required
+def dashboard(request):
+    print(f"User {request.user.username} is logged in")
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if profile.role == 'librarian':
+        return render(request, 'login/dashboard_librarian.html', {'user': request.user})
+    else:
+        return render(request, 'login/dashboard_patron.html', {'user': request.user})
 
 @login_required
 def post_login_redirect(request):
