@@ -1,2 +1,5 @@
 .venv
 venv/
+
+login/__pycache__/
+textbooklending/__pycache__/
