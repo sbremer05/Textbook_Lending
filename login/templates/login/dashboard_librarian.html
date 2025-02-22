@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Librarian Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, {{ user.username }} (Librarian)</h2>
+    <p>Your email: {{ user.email }}</p>
+
+    <h3>Dashboard</h3>
+    <ul>
+        <li><a href="#">📚 Manage Items (Coming Soon)</a></li>
+        <li><a href="#">📂 Manage Collections (Coming Soon)</a></li>
+        <li><a href="#">✅ Approve Borrow Requests (Coming Soon)</a></li>
+        <li><a href="#">🔼 Upgrade Patrons to Librarians (Coming Soon)</a></li>
+    </ul>
+
+    <a href="{% url 'logout' %}">Logout</a>
+
+    <footer>
+        <p>This system is a class project. It is not monitored, and no real information should be submitted.</p>
+    </footer>
+</body>
+</html>

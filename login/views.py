@@ -25,6 +25,6 @@ def dashboard(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
 
     if profile.role == 'librarian':
-        return render(request, 'dashboard_librarian.html', {'user': request.user})
+        return render(request, 'login/dashboard_librarian.html', {'user': request.user})
     else:
-        return render(request, 'dashboard_patron.html', {'user': request.user})
+        return render(request, 'login/dashboard_patron.html', {'user': request.user})
