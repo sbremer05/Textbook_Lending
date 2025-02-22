@@ -1,4 +1,24 @@
-<h2>Welcome Patron, {{ user.username.title }}!</h2>
-<p>You can borrow books.</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patron Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, {{ user.username }} (Patron)</h2>
+    <p>Your email: {{ user.email }}</p>
 
-<a href="{% url 'logout' %}">Logout</a>
+    <h3>Dashboard</h3>
+    <ul>
+        <li><a href="#">📚 Browse Available Books (Coming Soon)</a></li>
+        <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
+        <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
+        <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
+    </ul>
+
+    <a href="{% url 'logout' %}">Logout</a>
+
+    <footer>
+        <p>This system is a class project. It is not monitored, and no real information should be submitted.</p>
+    </footer>
+</body>
+</html>
