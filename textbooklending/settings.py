@@ -156,8 +156,10 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
+ACCOUNT_ADAPTER = "login.adapters.MyAccountAdapter"
 
-LOGIN_REDIRECT_URL = "/"
+
+LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = "/"
 
 django_on_heroku.settings(locals())
