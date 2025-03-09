@@ -25,5 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', home, name='home'),  # Default homepage route
     path("accounts/", include("allauth.urls")),
-    path("", include("login.urls"))
+    path("", include("login.urls")),
+    path('catalog/', include('catalog.urls')),
 ]

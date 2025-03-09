@@ -1,0 +1,13 @@
+<h2>Upload Profile Picture</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+
+<!-- Dynamically Redirect to the Correct Dashboard -->
+{% if user.profile.role == "librarian" %}
+    <a href="{% url 'librarian_dashboard' %}">Back to Dashboard</a>
+{% else %}
+    <a href="{% url 'patron_dashboard' %}">Back to Dashboard</a>
+{% endif %}
