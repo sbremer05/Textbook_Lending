@@ -16,3 +16,8 @@ def add_item(request):
 
     form = ItemForm()
     return render(request, "catalog/add_item.html", {"form": form})
+
+@login_required
+def view_items(request):
+    items = Item.objects.all()
+    return render(request, "catalog/view_items.html", {"items": items})

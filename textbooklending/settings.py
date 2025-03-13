@@ -33,6 +33,8 @@ DEBUG = os.getenv("DEBUG", "False") == "True" #True
 ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost', '127.0.0.1']
 
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Application definition
 
 SITE_ID = 2
