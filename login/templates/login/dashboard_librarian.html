@@ -81,7 +81,12 @@
 <body>
     <div class="container">
         <center>
-        <h2>Welcome, {{ user.username.title }}! <small>(Librarian)</small></h2>
+            
+        <h2>
+            {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;">
+        {% endif %}
+            Welcome, {{ user.username.title }}! <small>(Librarian)</small></h2>
         <p>Email: {{ user.email }}</p>
         </center>
         <h2>Dashboard</h2>
@@ -91,6 +96,7 @@
             <li><a href="#">📂 Manage Collections (Coming Soon)</a></li>
             <li><a href="#">✅ Approve Borrow Requests (Coming Soon)</a></li>
             <li><a href="#">🔼 Upgrade Patrons to Librarians (Coming Soon)</a></li>
+            <li><a href="{% url 'upload_profile_picture'%}">Upload profile picture</a></li>
         </ul>
         <center>
         <a href="{% url 'logout' %}" class="button-logout">Logout</a>

@@ -27,8 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-70dp93*)ixi37pnj^gu+*#&k8&qix1oz!e^$g6jl3wksuh%6&s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True" #True
-# DEBUG = True
+# DEBUG = os.getenv("DEBUG", "False") == "True" #True
+DEBUG = True
 
 ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost', '127.0.0.1']
 

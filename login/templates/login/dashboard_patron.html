@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patron Dashboard</title>
     <style>
+
+    .profile-pic {
+        width: 50px; 
+        height: 50px;
+        border-radius: 50%; 
+        object-fit: cover; 
+        vertical-align: middle; 
+        margin-right: 10px; 
+    }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
@@ -81,7 +90,13 @@
 <body>
     <div class="container">
         <center>
-        <h2>Welcome, {{ user.username.title }}! <small>(Patron)</small></h2>
+        <h2>
+        {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;">
+        {% endif %}
+            Welcome, {{ user.username.title }}! <small>(Patron)</small>
+            
+        </h2>
         <p>Email: {{ user.email }}</p>
         </center>
         <h2>Dashboard</h2>
@@ -91,6 +106,7 @@
             <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
             <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
             <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
+            <li><a href="{% url 'upload_profile_picture'%}">Upload profile picture</a></li>
         </ul>
         <center>
         <a href="{% url 'logout' %}" class="button-logout">Logout</a>
