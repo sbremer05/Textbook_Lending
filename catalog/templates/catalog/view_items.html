@@ -1,0 +1,15 @@
+<h1>View Items</h1>
+    <ul>
+        {% for item in items %}
+            <li>
+                <strong>{{ item.title }}</strong> is <strong> {{item.status}}</strong> at <strong> {{ item.location }}</strong><br>
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width:150px;">
+                {% else %}
+                    <p>No cover available</p>
+                {% endif %}
+            </li>
+        {% empty %}
+            <p>No books available.</p>
+        {% endfor %}
+    </ul>

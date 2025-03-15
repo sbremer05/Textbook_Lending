@@ -3,6 +3,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.models import SocialAccount
 from .models import Profile
+from .forms import ProfilePictureForm
 
 # Home view (Debugging included)
 def home(request):
@@ -52,6 +53,26 @@ def choose_role(request):
             return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
 
     return render(request, "login/choose_role.html")
+
+@login_required
+def profile_picture_upload(request):
+    if request.method == 'POST':
+        form = ProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('patron_dashboard' if request.user.profile.role == 'patron' else 'librarian_dashboard')
+
+    form = ProfilePictureForm(instance=request.user.profile)
+    return render(request, "login/upload_profile_picture.html", {"form": form})
+
+@login_required
+def dashboard(request):
+    """ Redirect users to the correct dashboard based on their role. """
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if profile.role == 'librarian':
+        return redirect('librarian_dashboard')
+    return redirect('patron_dashboard')
 
 # Patron Dashboard
 @login_required

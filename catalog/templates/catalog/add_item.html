@@ -1,0 +1,7 @@
+<h2>Add a New Item</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload Item</button>
+</form>
+<a href="{% url 'librarian_dashboard' %}">Back to Dashboard</a>
