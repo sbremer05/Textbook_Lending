@@ -84,7 +84,6 @@
             
         <h2>
             {% if user.profile.profile_picture %}
-            <p>{{user.profile.profile_picture.url}}</p>
         <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;">
         {% endif %}
             Welcome, {{ user.username.title }}! <small>(Librarian)</small></h2>
