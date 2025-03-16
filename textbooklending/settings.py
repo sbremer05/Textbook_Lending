@@ -192,4 +192,6 @@ SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapt
 LOGIN_REDIRECT_URL = "/redirect-after-login"
 LOGOUT_REDIRECT_URL = "/"
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 django_on_heroku.settings(locals())

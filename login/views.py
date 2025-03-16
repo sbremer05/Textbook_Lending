@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.models import SocialAccount
@@ -31,28 +33,16 @@ def post_login_redirect(request):
         profile, created = Profile.objects.get_or_create(user=user)
 
         if created or not profile.is_setup:
-            print(f"User {user.username} needs to choose a role.")
-            return redirect("choose_role")  # Named URL for choosing role
+            print(f"User {user.username} assigned default role: Patron.")
+            profile.role = "patron"
+            profile.is_setup = True
+            profile.save()
+            return redirect("patron_dashboard")
 
         print(f"Redirecting {user.username} to their dashboard ({profile.role})")
         return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
 
     return redirect("/")
-
-# Choose role view: Allows user to set Patron or Librarian role
-@login_required
-def choose_role(request):
-    if request.method == "POST":
-        role = request.POST.get("role")
-        if role in ["patron", "librarian"]:
-            profile = request.user.profile
-            profile.role = role
-            profile.is_setup = True
-            profile.save()
-            print(f"User {request.user.username} selected role: {role}")
-            return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
-
-    return render(request, "login/choose_role.html")
 
 @login_required
 def profile_picture_upload(request):
@@ -83,3 +73,33 @@ def patron_dashboard(request):
 @login_required
 def librarian_dashboard(request):
     return render(request, "login/dashboard_librarian.html", {"user": request.user})
+
+# Librarian Requests Page - handles Pending Requests
+@login_required
+def librarian_requests(request):
+    if request.user.profile.role != "librarian":
+        return redirect("patron_dashboard")  # Only librarians can access
+
+    # Fetch pending requests along with user details
+    pending_requests = Profile.objects.filter(role="pending").select_related("user")
+
+    # Approve requests and reset page
+    if request.method == "POST":
+        user_id = request.POST.get("approve_user")
+        if user_id:
+            profile = Profile.objects.get(id=user_id)
+            profile.role = "librarian"
+            profile.save()
+            return redirect("librarian_requests")
+
+    return render(request, "login/librarian_requests.html", {"pending_requests": pending_requests})
+
+# Request Librarian
+@login_required
+def request_librarian(request):
+    profile = request.user.profile
+    if profile.role == "patron" or profile.role == "pending":
+        profile.role = "pending"
+        profile.save()
+        messages.success(request, "Your request for librarian status has been submitted!")
+    return redirect("patron_dashboard")
