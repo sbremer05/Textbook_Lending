@@ -41,8 +41,8 @@ def post_login_redirect(request):
 
         print(f"Redirecting {user.username} to their dashboard ({profile.role})")
         return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
-
-    return redirect("/")
+    # else:
+    #     return redirect("/")
 
 @login_required
 def profile_picture_upload(request):
