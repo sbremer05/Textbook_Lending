@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.models import SocialAccount
 from .models import Profile
 from .forms import ProfilePictureForm
+from .decorators import role_required
 
 # Home view (Debugging included)
 def home(request):
