@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.models import SocialAccount
 from .models import Profile
 from .forms import ProfilePictureForm
+from .decorators import role_required
 
 # Home view (Debugging included)
 def home(request):
@@ -65,17 +66,20 @@ def dashboard(request):
     return redirect('patron_dashboard')
 
 # Patron Dashboard
-@login_required
+@role_required('patron', 'pending')
+#@login_required
 def patron_dashboard(request):
     return render(request, "login/dashboard_patron.html", {"user": request.user})
 
 # Librarian Dashboard
-@login_required
+@role_required('librarian')
+#@login_required
 def librarian_dashboard(request):
     return render(request, "login/dashboard_librarian.html", {"user": request.user})
 
 # Librarian Requests Page - handles Pending Requests
-@login_required
+@role_required('librarian')
+#@login_required
 def librarian_requests(request):
     if request.user.profile.role != "librarian":
         return redirect("patron_dashboard")  # Only librarians can access
@@ -95,7 +99,8 @@ def librarian_requests(request):
     return render(request, "login/librarian_requests.html", {"pending_requests": pending_requests})
 
 # Request Librarian
-@login_required
+@role_required('patron', 'pending')
+#@login_required
 def request_librarian(request):
     profile = request.user.profile
     if profile.role == "patron" or profile.role == "pending":
