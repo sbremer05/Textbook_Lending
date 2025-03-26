@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.messages import get_messages
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.models import SocialAccount
 from .models import Profile
 from .forms import ProfilePictureForm
 from .decorators import role_required
+from django.contrib.auth.models import User
 
 # Home view (Debugging included)
 def home(request):
@@ -19,9 +20,31 @@ def home(request):
 
     return render(request, "login/home.html")
 
+def guest_login(request):
+
+    guest_user = User.objects.create_user(username=f"guest_{str(Profile.objects.count() + 1)}", email="guest@example.com")
+
+    guest_profile, created = Profile.objects.get_or_create(user=guest_user)
+
+    if created:
+        guest_profile.is_guest = True
+        guest_profile.save()
+
+    guest_user.backend = 'django.contrib.auth.backends.ModelBackend'
+
+    login(request, guest_user)
+
+    return redirect('patron_dashboard')
+    
+
 # Logout view
 def logout_view(request):
+    if hasattr(request.user, 'profile') and request.user.profile.is_guest:
+        guest_profile = request.user.profile
+        guest_profile.delete()  
+
     logout(request)
+    
     return redirect("/")
 
 # Post-login redirection: Checks if user needs to select a role
