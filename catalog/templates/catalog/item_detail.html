@@ -1,0 +1,17 @@
+{% block content %}
+<h1>{{ item.title }}</h1>
+<p><strong>Identifier:</strong> {{ item.identifier }}</p>
+<p><strong>Status:</strong> {{ item.status }}</p>
+<p><strong>Location:</strong> {{ item.location }}</p>
+<p>{{ item.description }}</p>
+
+{% if item.image %}
+  <img src="{{ item.image.url }}" alt="{{ item.title }}" style="max-width: 300px;">
+{% endif %}
+
+{% if item.collection %}
+  <p><strong>Collection:</strong>
+    <a href="{% url 'collection_detail' item.collection.id %}">{{ item.collection.title }}</a>
+  </p>
+{% endif %}
+{% endblock %}

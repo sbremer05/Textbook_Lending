@@ -1,0 +1,15 @@
+{% block content %}
+<h1>{{ collection.title }}</h1>
+<p>{{ collection.description }}</p>
+
+<h2>Items in this Collection</h2>
+<ul>
+  {% for item in items %}
+    <li>
+      <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a> — {{ item.status }}
+    </li>
+  {% empty %}
+    <li>No items in this collection.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
