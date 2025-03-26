@@ -1,0 +1,15 @@
+{% block content %}
+<h2>Search the Library</h2>
+
+<form method="get" action="{% url 'search_items' %}">
+    <input type="text" name="q" placeholder="Search items..." required>
+    <button type="submit">Search Items</button>
+</form>
+
+<br>
+
+<form method="get" action="{% url 'search_collections' %}">
+    <input type="text" name="q" placeholder="Search collections..." required>
+    <button type="submit">Search Collections</button>
+</form>
+{% endblock %}

@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Item, Collection
 from .forms import ItemForm, CollectionForm
 
+from django.db.models import Q
+
 # Librarians can add items
 @login_required
 def add_item(request):
@@ -94,3 +96,25 @@ def item_detail(request, pk):
             return redirect('view_items')
 
     return render(request, "catalog/item_detail.html", {"item": item})
+
+@login_required
+def search_home(request):
+    return render(request, "catalog/search.html")
+
+@login_required
+def search_items(request):
+    query = request.GET.get("q", "")
+    results = Item.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
+    return render(request, "catalog/search_results.html", {"results": results, "query": query})
+
+@login_required
+def search_collections(request):
+    query = request.GET.get("q", "")
+    results = Collection.objects.filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )
+    return render(request, "catalog/collection_results.html", {"results": results, "query": query})
