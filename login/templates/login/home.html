@@ -17,7 +17,6 @@
         </form>
     {%  else %}
         <a href ="{% provider_login_url 'google' %}?next=/redirect-after-login" class="btn btn-primary">Log In With Google</a>
-        <a href="{% url 'guest_login' %}" class="btn btn-secondary">Login as Guest</a>
     {% endif %}
 </body>
 </html>

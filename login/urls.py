@@ -11,5 +11,4 @@ urlpatterns = [
     path("request-librarian/", views.request_librarian, name="request_librarian"),
     path("librarian-requests/", views.librarian_requests, name="librarian_requests"),
     path("upload-profile-picture/", views.profile_picture_upload, name="upload_profile_picture"),
-    path("guest-login/", views.guest_login, name="guest_login")
 ]

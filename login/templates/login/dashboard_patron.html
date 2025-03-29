@@ -121,17 +121,13 @@
             <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
             <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
             <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
-            {% if not user.is_guest %}
             <li><a href="{% url 'upload_profile_picture'%}">Upload profile picture</a></li>
-            {% endif %}
         </ul>
         <center>
-            {% if not user.is_guest %}
             <form method="POST" action="{% url 'request_librarian' %}">
                 {% csrf_token %}
                 <button type="submit" class="button-request">Request Librarian Status</button>
             </form>
-            {% endif %}
         <a href="{% url 'logout' %}" class="button-logout">Logout</a>
         </center>  
         <footer>
