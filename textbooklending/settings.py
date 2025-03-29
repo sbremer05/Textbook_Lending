@@ -140,7 +140,8 @@ WSGI_APPLICATION = 'textbooklending.wsgi.application'
 #     # )
 #     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 # }
-if 'DATABASE_URL' in os.environ:
+#if 'DATABASE_URL' in os.environ:
+if not DEBUG:
     # Production (Heroku Postgres)
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600)

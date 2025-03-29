@@ -1,0 +1,13 @@
+{% block content %}
+<h1>All Items</h1>
+
+<ul>
+  {% for item in items %}
+    <li>
+      <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a> — {{ item.status }}
+    </li>
+  {% empty %}
+    <li>No items available.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

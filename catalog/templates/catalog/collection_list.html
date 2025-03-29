@@ -1,0 +1,16 @@
+{% block content %}
+<h1>Collections</h1>
+
+<ul>
+  {% for collection in collections %}
+    <li>
+      <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
+      {% if collection.is_public %}
+        (Public)
+      {% else %}
+        (Private)
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

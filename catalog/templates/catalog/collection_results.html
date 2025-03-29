@@ -1,0 +1,22 @@
+{% block content %}
+  <h2>Search Results for "{{ query }}"</h2>
+
+  {% if results %}
+    <ul>
+      {% for collection in results %}
+        <li>
+          <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
+          {% if collection.is_public %}
+            (Public)
+          {% else %}
+            (Private)
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No collections matched your search.</p>
+  {% endif %}
+
+  <a href="{% url 'search_home' %}">← Back to Search</a>
+{% endblock %}
