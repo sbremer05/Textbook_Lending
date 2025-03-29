@@ -1,20 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
 
-{% block content %}
-<div class="container">
-    <h2>Search Results for "{{ query }}"</h2>
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-    {% if results %}
-        <ul>
-            {% for item in results %}
-                <li>
-                    <strong>{{ item.title }}</strong> — {{ item.description|truncatewords:15 }}<br>
-                    <a href="{% url 'item_detail' item.pk %}">View Item</a>
-                </li>
-                <hr>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No matching items found.</p>
-    {% endif %}
-</div>
-{% endblock %}
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: #34495e;
+            font-size: 1.1em;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 5px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #2980b9;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        p {
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Search Results for "{{ query }}"</h2>
+
+        {% if results %}
+            <ul>
+                {% for item in results %}
+                    <li>
+                        <strong>{{ item.title }}</strong><br>
+                        {{ item.description|truncatewords:15 }}<br>
+                        <a href="{% url 'item_detail' item.pk %}">View Item</a>
+                    </li>
+                    <hr>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No matching items found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

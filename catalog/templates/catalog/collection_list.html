@@ -1,16 +1,90 @@
-{% block content %}
-<h1>Collections</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Collections</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
 
-<ul>
-  {% for collection in collections %}
-    <li>
-      <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
-      {% if collection.is_public %}
-        (Public)
-      {% else %}
-        (Private)
-      {% endif %}
-    </li>
-  {% endfor %}
-</ul>
-{% endblock %}
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #2c3e50;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #2980b9;
+    }
+
+    .label {
+      font-size: 0.9em;
+      color: #7f8c8d;
+      margin-left: 8px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Collections</h1>
+
+    <ul>
+      {% for collection in collections %}
+        <li>
+          <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
+          <span class="label">
+            {% if collection.is_public %}
+              (Public)
+            {% else %}
+              (Private)
+            {% endif %}
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
+  </div>
+</body>
+</html>

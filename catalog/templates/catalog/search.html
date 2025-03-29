@@ -1,15 +1,89 @@
-{% block content %}
-<h2>Search the Library</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Library</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
 
-<form method="get" action="{% url 'search_items' %}">
-    <input type="text" name="q" placeholder="Search items..." required>
-    <button type="submit">Search Items</button>
-</form>
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-<br>
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: center;
+    }
 
-<form method="get" action="{% url 'search_collections' %}">
-    <input type="text" name="q" placeholder="Search collections..." required>
-    <button type="submit">Search Collections</button>
-</form>
-{% endblock %}
+    form {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 25px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 Search the Library</h2>
+
+    <form method="get" action="{% url 'search_items' %}">
+      <input type="text" name="q" placeholder="Search items..." required>
+      <button type="submit">Search Items</button>
+    </form>
+
+    <form method="get" action="{% url 'search_collections' %}">
+      <input type="text" name="q" placeholder="Search collections..." required>
+      <button type="submit">Search Collections</button>
+    </form>
+
+    <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
+  </div>
+</body>
+</html>

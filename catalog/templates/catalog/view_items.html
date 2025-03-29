@@ -1,15 +1,75 @@
-<h1>View Items</h1>
-    <ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Items</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    img {
+      margin-top: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-items {
+      color: #7f8c8d;
+      text-align: center;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 View Items</h1>
+
+    {% if items %}
+      <ul>
         {% for item in items %}
-            <li>
-                <strong>{{ item.title }}</strong> is <strong> {{item.status}}</strong> at <strong> {{ item.location }}</strong><br>
-                {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width:150px;">
-                {% else %}
-                    <p>No cover available</p>
-                {% endif %}
-            </li>
-        {% empty %}
-            <p>No books available.</p>
+          <li>
+            <strong>{{ item.title }}</strong> is <strong>{{ item.status }}</strong> at <strong>{{ item.location }}</strong><br>
+            {% if item.image %}
+              <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width: 150px;">
+            {% else %}
+              <p>No cover available</p>
+            {% endif %}
+          </li>
         {% endfor %}
-    </ul>
+      </ul>
+    {% else %}
+      <p class="no-items">No books available.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

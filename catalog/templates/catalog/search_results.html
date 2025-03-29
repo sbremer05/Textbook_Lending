@@ -1,17 +1,86 @@
-{% block content %}
-  <h2>Search Results for "{{ query }}"</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
 
-  {% if results %}
-    <ul>
-      {% for item in results %}
-        <li>
-          <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No items or collections matched your search.</p>
-  {% endif %}
-  
-  <a href="{% url 'search_home' %}">← Back to Search</a>
-{% endblock %}
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #ecf0f1;
+      margin-bottom: 10px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+    }
+
+    a:hover {
+      color: #2980b9;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #3498db;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: #2980b9;
+    }
+
+    p {
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Search Results for "{{ query }}"</h2>
+
+    {% if results %}
+      <ul>
+        {% for item in results %}
+          <li>
+            <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No items or collections matched your search.</p>
+    {% endif %}
+
+    <a href="{% url 'search_home' %}" class="back-link">← Back to Search</a>
+  </div>
+</body>
+</html>

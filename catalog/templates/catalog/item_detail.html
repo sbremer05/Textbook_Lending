@@ -1,17 +1,89 @@
-{% block content %}
-<h1>{{ item.title }}</h1>
-<p><strong>Identifier:</strong> {{ item.identifier }}</p>
-<p><strong>Status:</strong> {{ item.status }}</p>
-<p><strong>Location:</strong> {{ item.location }}</p>
-<p>{{ item.description }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ item.title }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
 
-{% if item.image %}
-  <img src="{{ item.image.url }}" alt="{{ item.title }}" style="max-width: 300px;">
-{% endif %}
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-{% if item.collection %}
-  <p><strong>Collection:</strong>
-    <a href="{% url 'collection_detail' item.collection.id %}">{{ item.collection.title }}</a>
-  </p>
-{% endif %}
-{% endblock %}
+    h1 {
+      color: #2c3e50;
+    }
+
+    p {
+      color: #34495e;
+      line-height: 1.6;
+    }
+
+    strong {
+      color: #2c3e50;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      color: #2980b9;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ item.title }}</h1>
+    <p><strong>Identifier:</strong> {{ item.identifier }}</p>
+    <p><strong>Status:</strong> {{ item.status }}</p>
+    <p><strong>Location:</strong> {{ item.location }}</p>
+    <p>{{ item.description }}</p>
+
+    {% if item.image %}
+      <img src="{{ item.image.url }}" alt="{{ item.title }}">
+    {% endif %}
+
+    {% if item.collection %}
+      <p><strong>Collection:</strong>
+        <a href="{% url 'collection_detail' item.collection.id %}">{{ item.collection.title }}</a>
+      </p>
+    {% endif %}
+
+    <a href="{% url 'view_items' %}" class="back-link">← Back to Items</a>
+  </div>
+</body>
+</html>

@@ -1,15 +1,86 @@
-{% block content %}
-<h1>{{ collection.title }}</h1>
-<p>{{ collection.description }}</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ collection.title }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
 
-<h2>Items in this Collection</h2>
-<ul>
-  {% for item in items %}
-    <li>
-      <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a> — {{ item.status }}
-    </li>
-  {% empty %}
-    <li>No items in this collection.</li>
-  {% endfor %}
-</ul>
-{% endblock %}
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    p {
+      color: #7f8c8d;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #2980b9;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ collection.title }}</h1>
+    <p>{{ collection.description }}</p>
+
+    <h2>Items in this Collection</h2>
+    <ul>
+      {% for item in items %}
+        <li>
+          <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a> — {{ item.status }}
+        </li>
+      {% empty %}
+        <li>No items in this collection.</li>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'view_collections' %}" class="back-link">← Back to Collections</a>
+  </div>
+</body>
+</html>
