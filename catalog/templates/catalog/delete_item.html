@@ -1,73 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Delete Item</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-    }
+{% extends "base.html" %}
 
-    .container {
-      max-width: 600px;
-      margin: 100px auto;
-      background-color: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
+{% block title %}Delete Item{% endblock %}
 
-    h1 {
-      color: #c0392b;
-      margin-bottom: 20px;
-    }
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 100px auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center;">
+  <h1 style="color: #c0392b; margin-bottom: 20px;">Delete Item</h1>
+  <p style="color: #2c3e50; font-size: 1.1em;">Are you sure you want to delete <strong>{{ item.title }}</strong>?</p>
 
-    p {
-      color: #2c3e50;
-      font-size: 1.1em;
-    }
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn-delete" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px;">
+      Yes, Delete
+    </button>
+  </form>
 
-    .btn-delete {
-      background-color: #e74c3c;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .btn-delete:hover {
-      background-color: #c0392b;
-    }
-
-    .cancel-link {
-      display: block;
-      margin-top: 20px;
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .cancel-link:hover {
-      color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Delete Item</h1>
-    <p>Are you sure you want to delete <strong>{{ item.title }}</strong>?</p>
-    <form method="POST">
-      {% csrf_token %}
-      <button type="submit" class="btn-delete">Yes, Delete</button>
-    </form>
-    <a href="{% url 'item_detail' item.pk %}" class="cancel-link">← Cancel</a>
-  </div>
-</body>
-</html>
+  <a href="{% url 'item_detail' item.pk %}" class="cancel-link" style="display: block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
+    ← Cancel
+  </a>
+</div>
+{% endblock %}

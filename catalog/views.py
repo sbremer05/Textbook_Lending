@@ -9,6 +9,8 @@ from .models import Item, Collection
 from .forms import ItemForm, CollectionForm
 
 from django.db.models import Q
+from django.http import HttpResponseForbidden
+
 
 # Librarians can add items
 @login_required

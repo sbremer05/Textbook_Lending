@@ -1,78 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Add a Collection</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-    }
+{% extends "base.html" %}
 
-    .container {
-      max-width: 700px;
-      margin: 60px auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+{% block title %}Add a Collection{% endblock %}
 
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
+{% block content %}
+<div class="container" style="max-width: 700px; margin: 60px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h1 style="color: #2c3e50; margin-bottom: 20px;">Add a Collection</h1>
 
-    form {
-      display: flex;
-      flex-direction: column;
-    }
+  <form method="post" style="display: flex; flex-direction: column;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" style="width: fit-content; padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease;">
+      Create Collection
+    </button>
+  </form>
 
-    form p {
-      margin-bottom: 15px;
-      color: #34495e;
-    }
-
-    button {
-      width: fit-content;
-      padding: 10px 20px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    a.back-link {
-      display: inline-block;
-      margin-top: 20px;
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    a.back-link:hover {
-      color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Add a Collection</h1>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Create Collection</button>
-    </form>
-    <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
-  </div>
-</body>
-</html>
+  <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
+    ← Back to Dashboard
+  </a>
+</div>
+{% endblock %}

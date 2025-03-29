@@ -1,108 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>📚 View Items</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-    }
+{% extends "base.html" %}
 
-    .container {
-      max-width: 800px;
-      margin: 50px auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+{% block title %}📚 View Items{% endblock %}
 
-    h1 {
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 30px;
-    }
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h1 style="color: #2c3e50; text-align: center; margin-bottom: 30px;">📚 View Items</h1>
 
-    .add-button {
-      display: inline-block;
-      margin-bottom: 20px;
-      padding: 10px 20px;
-      background-color: #27ae60;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
-    }
+  {% if user.profile.role == "librarian" %}
+    <a href="{% url 'add_item' %}" style="display: inline-block; margin-bottom: 20px; padding: 10px 20px; background-color: #27ae60; color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">
+      ➕ Add New Item
+    </a>
+  {% endif %}
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+  {% if items %}
+    <ul style="list-style: none; padding: 0;">
+      {% for item in items %}
+        <li style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ecf0f1;">
+          <strong>{{ item.title }}</strong> is <strong>{{ item.status }}</strong> at <strong>{{ item.location }}</strong><br>
+          {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width: 150px; margin-top: 10px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+          {% else %}
+            <p style="color: #7f8c8d;">No cover available</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="color: #7f8c8d; text-align: center; font-size: 1.1em;">No books available.</p>
+  {% endif %}
 
-    li {
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #ecf0f1;
-    }
-
-    img {
-      margin-top: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .no-items {
-      color: #7f8c8d;
-      text-align: center;
-      font-size: 1.1em;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 30px;
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .back-link:hover {
-      color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>📚 View Items</h1>
-
-    {% if user.profile.role == "librarian" %}
-      <a href="{% url 'add_item' %}" class="add-button">➕ Add New Item</a>
-    {% endif %}
-
-    {% if items %}
-      <ul>
-        {% for item in items %}
-          <li>
-            <strong>{{ item.title }}</strong> is <strong>{{ item.status }}</strong> at <strong>{{ item.location }}</strong><br>
-            {% if item.image %}
-              <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width: 150px;">
-            {% else %}
-              <p>No cover available</p>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="no-items">No books available.</p>
-    {% endif %}
-
-    {% if user.profile.role == "librarian" %}
-      <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
-    {% else %}
-      <a href="{% url 'patron_dashboard' %}" class="back-link">← Back to Dashboard</a>
-    {% endif %}
-  </div>
-</body>
-</html>
+  {% if user.profile.role == "librarian" %}
+    <a href="{% url 'librarian_dashboard' %}" style="display: inline-block; margin-top: 30px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Dashboard</a>
+  {% else %}
+    <a href="{% url 'patron_dashboard' %}" style="display: inline-block; margin-top: 30px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Dashboard</a>
+  {% endif %}
+</div>
+{% endblock %}

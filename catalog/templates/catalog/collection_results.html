@@ -1,94 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Search Collections</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-    }
+{% extends "base.html" %}
 
-    .container {
-      max-width: 800px;
-      margin: 50px auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+{% block title %}Search Collections{% endblock %}
 
-    h2 {
-      color: #2c3e50;
-    }
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h2 style="color: #2c3e50;">Search Results for "{{ query }}"</h2>
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+  {% if results %}
+    <ul style="list-style: none; padding: 0;">
+      {% for collection in results %}
+        <li style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #ecf0f1;">
+          <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: #3498db; font-weight: bold; transition: color 0.3s ease;">
+            {{ collection.title }}
+          </a>
+          <span class="label" style="font-size: 0.9em; color: #7f8c8d; margin-left: 8px;">
+            {% if collection.is_public %}
+              (Public)
+            {% else %}
+              (Private)
+            {% endif %}
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="color: #7f8c8d;">No collections matched your search.</p>
+  {% endif %}
 
-    li {
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ecf0f1;
-    }
-
-    a {
-      text-decoration: none;
-      color: #3498db;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      color: #2980b9;
-    }
-
-    .label {
-      font-size: 0.9em;
-      color: #7f8c8d;
-      margin-left: 8px;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 20px;
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .back-link:hover {
-      color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Search Results for "{{ query }}"</h2>
-
-    {% if results %}
-      <ul>
-        {% for collection in results %}
-          <li>
-            <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
-            <span class="label">
-              {% if collection.is_public %}
-                (Public)
-              {% else %}
-                (Private)
-              {% endif %}
-            </span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No collections matched your search.</p>
-    {% endif %}
-
-    <a href="{% url 'search_home' %}" class="back-link">← Back to Search</a>
-  </div>
-</body>
-</html>
+  <a href="{% url 'search_home' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Search</a>
+</div>
+{% endblock %}

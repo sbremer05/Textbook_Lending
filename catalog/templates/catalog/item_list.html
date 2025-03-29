@@ -1,86 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>All Items</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-    }
+{% extends "base.html" %}
 
-    .container {
-      max-width: 800px;
-      margin: 50px auto;
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
+{% block title %}All Items{% endblock %}
 
-    h1 {
-      color: #2c3e50;
-      margin-top: 0;
-    }
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h1 style="color: #2c3e50; margin-top: 0;">All Items</h1>
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+  <ul style="list-style: none; padding: 0;">
+    {% for item in items %}
+      <li style="background-color: #ecf0f1; margin-bottom: 10px; padding: 15px; border-radius: 5px;">
+        <a href="{% url 'item_detail' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">{{ item.title }}</a>
+        <div class="status" style="color: #7f8c8d; font-size: 0.9em;">Status: {{ item.status }}</div>
+      </li>
+    {% empty %}
+      <li style="color: #7f8c8d;">No items available.</li>
+    {% endfor %}
+  </ul>
 
-    li {
-      background-color: #ecf0f1;
-      margin-bottom: 10px;
-      padding: 15px;
-      border-radius: 5px;
-    }
-
-    a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    a:hover {
-      color: #2980b9;
-    }
-
-    .status {
-      color: #7f8c8d;
-      font-size: 0.9em;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-top: 20px;
-      text-decoration: none;
-      font-weight: bold;
-      color: #3498db;
-    }
-
-    .back-link:hover {
-      color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>All Items</h1>
-
-    <ul>
-      {% for item in items %}
-        <li>
-          <a href="{% url 'item_detail' item.id %}">{{ item.title }}</a>
-          <div class="status">Status: {{ item.status }}</div>
-        </li>
-      {% empty %}
-        <li>No items available.</li>
-      {% endfor %}
-    </ul>
-
-    <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
-  </div>
-</body>
-</html>
+  <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: inline-block; margin-top: 20px; text-decoration: none; font-weight: bold; color: #3498db;">← Back to Dashboard</a>
+</div>
+{% endblock %}
