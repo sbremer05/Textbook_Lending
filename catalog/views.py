@@ -46,20 +46,38 @@ def view_items(request):
 # Librarians can add collections
 @login_required
 def add_collection(request):
-    if request.user.profile.role != 'librarian':
-        return redirect('patron_dashboard')
+    if request.user.profile.role == 'patron':
+        # Patrons can only create public collections
+        if request.method == 'POST':
+            form = CollectionForm(request.POST)
+            if form.is_valid():
+                collection = form.save(commit=False)
+                collection.created_by = request.user
+                collection.is_public = True  # Force public
+                collection.save()
+                form.save_m2m()
+                return redirect('view_collections')
+        else:
+            form = CollectionForm()
+            form.fields['is_public'].initial = True
+            form.fields['is_public'].disabled = True  # Lock the field
+    elif request.user.profile.role == 'librarian':
+        # Librarians: full collection form
+        if request.method == 'POST':
+            form = CollectionForm(request.POST)
+            if form.is_valid():
+                collection = form.save(commit=False)
+                collection.created_by = request.user
+                collection.save()
+                form.save_m2m()
+                return redirect('view_collections')
+        else:
+            form = CollectionForm()
+    else:
+        return redirect('search_home')
 
-    if request.method == 'POST':
-        form = CollectionForm(request.POST)
-        if form.is_valid():
-            collection = form.save(commit=False)
-            collection.created_by = request.user
-            collection.save()
-            form.save_m2m()
-            return redirect('view_collections')
-
-    form = CollectionForm()
     return render(request, "catalog/add_collection.html", {"form": form})
+
 
 # All users can view collections (with role-based filtering)
 @login_required
@@ -70,32 +88,42 @@ def view_collections(request):
     if profile.role == 'librarian':
         collections = Collection.objects.all()
     elif profile.role == 'patron':
-        collections = Collection.objects.filter(is_public=True) | Collection.objects.filter(private_users=user)
+        collections = Collection.objects.filter(is_public=True) | Collection.objects.filter(allowed_users=user)
     else:
         collections = Collection.objects.filter(is_public=True)
 
-    return render(request, "catalog/collection_list.html", {"collections": collections.distinct()})
+    return render(request, "catalog/view_collections.html", {"collections": collections.distinct()})
 
 @login_required
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
 
-    if not collection.is_public and request.user != collection.created_by and request.user not in collection.private_users.all():
+    if not collection.is_public and request.user != collection.created_by and request.user not in collection.allowed_users.all():
         return redirect('view_collections')
 
-    items = collection.item_set.all()
+    items = collection.items.all()
     return render(request, "catalog/collection_detail.html", {"collection": collection, "items": items})
 
 @login_required
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
+    collections = item.collections.all()
 
-    # Check collection privacy if item is in a private collection
-    if item.collection:
-        if not item.collection.is_public and request.user != item.collection.created_by and request.user not in item.collection.private_users.all():
-            return redirect('view_items')
+    # Allow access if at least one collection is public or user has rights
+    has_access = False
+    for collection in collections:
+        if collection.is_public or request.user == collection.created_by or request.user in collection.allowed_users.all():
+            has_access = True
+            break
 
-    return render(request, "catalog/item_detail.html", {"item": item})
+    if not has_access and collections.exists():
+        return redirect("view_items")  # or show an error page
+
+    return render(request, 'catalog/item_detail.html', {
+        'item': item,
+        'collections': collections
+    })
+
 
 @login_required
 def search_home(request):
@@ -118,3 +146,57 @@ def search_collections(request):
         Q(description__icontains=query)
     )
     return render(request, "catalog/collection_results.html", {"results": results, "query": query})
+
+@login_required
+def edit_item(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    if request.user != item.created_by:
+        return redirect("view_items")
+
+    form = ItemForm(request.POST or None, request.FILES or None, instance=item)
+    if form.is_valid():
+        form.save()
+        return redirect("item_detail", pk=item.pk)
+    return render(request, "catalog/edit_item.html", {"form": form})
+
+@login_required
+def delete_item(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    if request.user != item.created_by:
+        return redirect("view_items")
+
+    if request.method == "POST":
+        item.delete()
+        return redirect("view_items")
+    return render(request, "catalog/confirm_delete.html", {"object": item, "type": "Item"})
+
+@login_required
+def edit_collection(request, pk):
+    collection = get_object_or_404(Collection, pk=pk)
+
+    if request.user != collection.created_by:
+        return HttpResponseForbidden("You are not allowed to edit this collection.")
+
+    if request.method == 'POST':
+        form = CollectionForm(request.POST, instance=collection)
+        if form.is_valid():
+            form.save()
+            return redirect('collection_detail', pk=collection.pk)
+    else:
+        form = CollectionForm(instance=collection)
+
+    return render(request, 'catalog/edit_collection.html', {'form': form, 'collection': collection})
+
+
+@login_required
+def delete_collection(request, pk):
+    collection = get_object_or_404(Collection, pk=pk)
+
+    if request.user != collection.created_by:
+        return HttpResponseForbidden("You are not allowed to delete this collection.")
+
+    if request.method == 'POST':
+        collection.delete()
+        return redirect('view_collections')
+
+    return render(request, 'catalog/delete_collection.html', {'collection': collection})

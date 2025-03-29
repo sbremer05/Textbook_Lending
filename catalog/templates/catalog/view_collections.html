@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Collections</title>
+  <title>📂 View Collections</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,6 +22,8 @@
 
     h1 {
       color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
     }
 
     ul {
@@ -30,8 +32,8 @@
     }
 
     li {
-      margin-bottom: 15px;
-      padding-bottom: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
       border-bottom: 1px solid #ecf0f1;
     }
 
@@ -52,9 +54,20 @@
       margin-left: 8px;
     }
 
+    .add-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
     .back-link {
       display: inline-block;
-      margin-top: 20px;
+      margin-top: 30px;
       color: #3498db;
       text-decoration: none;
       font-weight: bold;
@@ -67,7 +80,11 @@
 </head>
 <body>
   <div class="container">
-    <h1>Collections</h1>
+    <h1>📂 View Collections</h1>
+
+    {% if user.profile.role == "librarian" or user.profile.role == "patron" %}
+      <a href="{% url 'add_collection' %}" class="add-button">➕ Add New Collection</a>
+    {% endif %}
 
     <ul>
       {% for collection in collections %}
@@ -84,7 +101,11 @@
       {% endfor %}
     </ul>
 
-    <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
+    {% if user.profile.role == "librarian" %}
+      <a href="{% url 'librarian_dashboard' %}" class="back-link">← Back to Dashboard</a>
+    {% elif user.profile.role == "patron" %}
+      <a href="{% url 'patron_dashboard' %}" class="back-link">← Back to Dashboard</a>
+    {% endif %}
   </div>
 </body>
 </html>

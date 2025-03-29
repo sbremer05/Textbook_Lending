@@ -69,6 +69,11 @@
     <h1>{{ collection.title }}</h1>
     <p>{{ collection.description }}</p>
 
+    {% if user == collection.created_by %}
+      <a href="{% url 'edit_collection' collection.id %}">✏️ Edit</a>
+      <a href="{% url 'delete_collection' collection.id %}">🗑️ Delete</a>
+    {% endif %}
+
     <h2>Items in this Collection</h2>
     <ul>
       {% for item in items %}

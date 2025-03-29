@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Item</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .cancel-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .cancel-link:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Item</h1>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Save Changes</button>
+    </form>
+    <a href="{% url 'item_detail' item.pk %}" class="cancel-link">← Cancel</a>
+  </div>
+</body>
+</html>

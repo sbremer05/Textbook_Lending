@@ -81,6 +81,11 @@
       <p><strong>Collection:</strong>
         <a href="{% url 'collection_detail' item.collection.id %}">{{ item.collection.title }}</a>
       </p>
+      {% if user == item.created_by %}
+        <a href="{% url 'edit_item' item.id %}">✏️ Edit</a>
+        <a href="{% url 'delete_item' item.id %}">🗑️ Delete</a>
+      {% endif %}
+
     {% endif %}
 
     <a href="{% url 'view_items' %}" class="back-link">← Back to Items</a>
