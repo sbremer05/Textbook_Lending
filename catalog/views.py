@@ -14,7 +14,7 @@ from django.db.models import Q
 @login_required
 def add_item(request):
     if request.user.profile.role != 'librarian':
-        return redirect('patron_dashboard')  # Only librarians can upload
+        return redirect('home')  # Only librarians can upload
 
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
@@ -47,7 +47,7 @@ def view_items(request):
 @login_required
 def add_collection(request):
     if request.user.profile.role != 'librarian':
-        return redirect('patron_dashboard')
+        return redirect('home')
 
     if request.method == 'POST':
         form = CollectionForm(request.POST)
@@ -81,7 +81,7 @@ def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
 
     if not collection.is_public and request.user != collection.created_by and request.user not in collection.private_users.all():
-        return redirect('view_collections')
+        return redirect('home')
 
     items = collection.item_set.all()
     return render(request, "catalog/collection_detail.html", {"collection": collection, "items": items})

@@ -11,19 +11,22 @@ from django.contrib.auth.models import User
 
 # Home view (Debugging included)
 def home(request):
-    print(f"User authenticated? {request.user.is_authenticated}")  # Debugging
-
     if request.user.is_authenticated:
-        print(f"User {request.user.username} is logged in!")  # Debugging
-        print("Redirecting to post-login check...")  # Debugging
-        return redirect('post_login_redirect')  # Redirect to check role
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        if created or not profile.is_setup:
+            profile.role = "patron"  # Default role
+            profile.is_setup = True
+            profile.save()
+        context = {"user": request.user, "role": profile.role, "is_authenticated": True}
+    else:
+        context = {"is_authenticated": False}
+    return render(request, "login/home.html", context)
 
-    return render(request, "login/home.html")
+
     
 
 # Logout view
 def logout_view(request):
-
     logout(request)
     
     return redirect("/")
@@ -42,20 +45,28 @@ def post_login_redirect(request):
             profile.role = "patron"
             profile.is_setup = True
             profile.save()
-            return redirect("patron_dashboard")
+            # return redirect("patron_dashboard")
 
         print(f"Redirecting {user.username} to their dashboard ({profile.role})")
-        return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
+        # return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
+        return redirect("librarian_dashboard" if profile.role == "librarian" else "home")
     else:
         return redirect("/")
 
-@login_required
+# @login_required
 def profile_picture_upload(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to upload a profile picture.")
+        return render(request, "login/upload_profile_picture.html", {
+            "form": None,
+            "error_message": "You must be logged in to upload a profile picture. Please log in first."
+        })
+
     if request.method == 'POST':
         form = ProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            return redirect('patron_dashboard' if request.user.profile.role == 'patron' else 'librarian_dashboard')
+            return redirect('home' if request.user.profile.role != 'librarian' else 'librarian_dashboard')
 
     form = ProfilePictureForm(instance=request.user.profile)
     return render(request, "login/upload_profile_picture.html", {"form": form})
@@ -70,23 +81,23 @@ def dashboard(request):
     return redirect('patron_dashboard')
 
 # Patron Dashboard
-@role_required('patron', 'pending')
-#@login_required
-def patron_dashboard(request):
-    return render(request, "login/dashboard_patron.html", {"user": request.user})
+# @role_required('patron', 'pending')
+# @login_required
+# def patron_dashboard(request):
+#     return render(request, "login/dashboard_patron.html", {"user": request.user})
 
 # Librarian Dashboard
 @role_required('librarian')
-#@login_required
+@login_required
 def librarian_dashboard(request):
     return render(request, "login/dashboard_librarian.html", {"user": request.user})
 
 # Librarian Requests Page - handles Pending Requests
 @role_required('librarian')
-#@login_required
+@login_required
 def librarian_requests(request):
     if request.user.profile.role != "librarian":
-        return redirect("patron_dashboard")  # Only librarians can access
+        return redirect("home")  # Only librarians can access
 
     # Fetch pending requests along with user details
     pending_requests = Profile.objects.filter(role="pending").select_related("user")
@@ -104,11 +115,11 @@ def librarian_requests(request):
 
 # Request Librarian
 @role_required('patron', 'pending')
-#@login_required
+@login_required
 def request_librarian(request):
     profile = request.user.profile
     if profile.role == "patron" or profile.role == "pending":
         profile.role = "pending"
         profile.save()
         messages.success(request, "Your request for librarian status has been submitted!")
-    return redirect("patron_dashboard")
+    return redirect("home")
