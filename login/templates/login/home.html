@@ -129,6 +129,7 @@
             <h2>Dashboard</h2>
             <ul>
                 <li><a href="{% url 'view_items' %}">📚 Browse Available Books</a></li>
+                <li><a href="{% url 'view_collections' %}">📚 Browse Collections</a></li>
                 <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
                 <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
                 <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
@@ -141,6 +142,15 @@
                 </form>
                 <a href="{% url 'logout' %}" class="button-logout">Logout</a>
             </center>
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert" style="background-color: #f0f9ff; color: #155724; border-left: 5px solid #28a745; margin-bottom: 10px;">
+                            <strong>{{ message }}</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% else %}
             <h2>Guest View</h2>
             <p>Welcome, guest! You can browse available books and access some basic features.</p>
@@ -156,6 +166,7 @@
             ">🔍 Go to Search Page</a>
             <ul>
                 <li><a href="{% url 'view_items' %}">📚 Browse Available Books</a></li>
+                <li><a href="{% url 'view_collections' %}">📚 Browse Collections</a></li>
                 <li><a href="#">📖 View Borrowed Books (Login required)</a></li>
                 <li><a href="#">📥 Request a Book (Login required)</a></li>
                 <li><a href="#">🔔 Notifications (Login required)</a></li>

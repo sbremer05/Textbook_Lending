@@ -71,14 +71,14 @@ def profile_picture_upload(request):
     form = ProfilePictureForm(instance=request.user.profile)
     return render(request, "login/upload_profile_picture.html", {"form": form})
 
-@login_required
+# @login_required
 def dashboard(request):
     """ Redirect users to the correct dashboard based on their role. """
     profile, created = Profile.objects.get_or_create(user=request.user)
 
     if profile.role == 'librarian':
         return redirect('librarian_dashboard')
-    return redirect('patron_dashboard')
+    return redirect('home')
 
 # Patron Dashboard
 # @role_required('patron', 'pending')
