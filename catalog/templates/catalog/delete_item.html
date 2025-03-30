@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Item{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 100px auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center;">
+  <h1 style="color: #c0392b; margin-bottom: 20px;">Delete Item</h1>
+  <p style="color: #2c3e50; font-size: 1.1em;">Are you sure you want to delete <strong>{{ item.title }}</strong>?</p>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn-delete" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px;">
+      Yes, Delete
+    </button>
+  </form>
+
+  <a href="{% url 'item_detail' item.pk %}" class="cancel-link" style="display: block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
+    ← Cancel
+  </a>
+</div>
+{% endblock %}

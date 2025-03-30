@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Collection{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h1 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">Edit Collection</h1>
+  <form method="POST" style="margin-top: 20px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" style="background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+      Save Changes
+    </button>
+  </form>
+  <a href="{% url 'collection_detail' collection.pk %}" class="cancel-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
+    ← Cancel
+  </a>
+</div>
+{% endblock %}

@@ -1,150 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patron Dashboard</title>
-    <style>
+{% extends "base.html" %}
 
-    .profile-pic {
-        width: 50px; 
-        height: 50px;
-        border-radius: 50%; 
-        object-fit: cover; 
-        vertical-align: middle; 
-        margin-right: 10px; 
-    }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 0;
-        }
+{% block title %}Patron Dashboard{% endblock %}
 
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+{% block content %}
+<div class="container">
+  <center>
+    <h2>
+      {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;" />
+      {% endif %}
+      Welcome, {{ user.username.title }}! <small>(Patron)</small>
+    </h2>
+    <p>Email: {{ user.email }}</p>
 
-        h2 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
+    <a href="{% url 'search_home' %}" style="
+      display: inline-block;
+      margin: 10px 0 20px;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    ">🔍 Go to Search Page</a>
+  </center>
 
-        p {
-            color: #7f8c8d;
-        }
+  <h2>Dashboard</h2>
+  <ul>
+    <li><a href="{% url 'view_items' %}">📚 Browse Available Books</a></li>
+    <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
+    <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
+    <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
+    <li><a href="{% url 'view_collections' %}">📂 Manage Collections</a></li>
+    <li><a href="{% url 'upload_profile_picture' %}">Upload profile picture</a></li>
+  </ul>
 
-        h3 {
-            margin-bottom: 10px;
-            color: #34495e;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px 0;
-        }
-
-        a {
-            text-decoration: none;
-            color: #3498db;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: #2980b9;
-        }
-
-        .button-logout {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .button-logout:hover {
-            background-color: #c0392b;
-        }
-
-    .button-request {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #3c4de7;
-        color: white;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s ease;
-    }
-
-    .button-request:hover {
-        background-color: #2e3cb3;
-    }
-
-        footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: #95a5a6;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <center>
-        <h2>
-        {% if user.profile.profile_picture %}
-        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;">
-        {% endif %}
-            Welcome, {{ user.username.title }}! <small>(Patron)</small>
-            
-        </h2>
-        <p>Email: {{ user.email }}</p>
-
-        <a href="{% url 'search_home' %}" style="
-            display: inline-block;
-            margin: 10px 0 20px;
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        ">🔍 Go to Search Page</a>
-        
-        </center>
-        <h2>Dashboard</h2>
-        <ul>
-            <!-- <li><a href="#">📚 Browse Available Books (Coming Soon)</a></li> -->
-            <li><a href="{% url 'view_items' %}">📚 Browse Available Books (Coming Soon)</a></li>
-            <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
-            <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
-            <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
-            <li><a href="{% url 'upload_profile_picture'%}">Upload profile picture</a></li>
-        </ul>
-        <center>
-            <form method="POST" action="{% url 'request_librarian' %}">
-                {% csrf_token %}
-                <button type="submit" class="button-request">Request Librarian Status</button>
-            </form>
-        <a href="{% url 'logout' %}" class="button-logout">Logout</a>
-        </center>  
-        <footer>
-            <p>This system is a class project. It is not monitored, and no real information should be submitted.</p>
-        </footer>
-    </div>
-</body>
-</html>
+  <center>
+    <form method="POST" action="{% url 'request_librarian' %}">
+      {% csrf_token %}
+      <button type="submit" class="button-request">Request Librarian Status</button>
+    </form>
+    <a href="{% url 'logout' %}" class="button-logout">Logout</a>
+  </center>
+</div>
+{% endblock %}

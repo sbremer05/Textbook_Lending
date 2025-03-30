@@ -1,17 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }}{% endblock %}
+
 {% block content %}
-<h1>{{ item.title }}</h1>
-<p><strong>Identifier:</strong> {{ item.identifier }}</p>
-<p><strong>Status:</strong> {{ item.status }}</p>
-<p><strong>Location:</strong> {{ item.location }}</p>
-<p>{{ item.description }}</p>
+<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h1 style="color: #2c3e50;">{{ item.title }}</h1>
+  <p><strong style="color: #2c3e50;">Identifier:</strong> {{ item.identifier }}</p>
+  <p><strong style="color: #2c3e50;">Status:</strong> {{ item.status }}</p>
+  <p><strong style="color: #2c3e50;">Location:</strong> {{ item.location }}</p>
+  <p style="color: #34495e;">{{ item.description }}</p>
 
-{% if item.image %}
-  <img src="{{ item.image.url }}" alt="{{ item.title }}" style="max-width: 300px;">
-{% endif %}
+  {% if item.image %}
+    <img src="{{ item.image.url }}" alt="{{ item.title }}" style="display: block; max-width: 100%; height: auto; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+  {% endif %}
 
-{% if item.collection %}
-  <p><strong>Collection:</strong>
-    <a href="{% url 'collection_detail' item.collection.id %}">{{ item.collection.title }}</a>
-  </p>
-{% endif %}
+  {% if item.collections.exists %}
+    <p><strong style="color: #2c3e50;">Collections:</strong>
+      {% for col in item.collections.all %}
+        <a href="{% url 'collection_detail' col.id %}">{{ col.title }}</a>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  {% if user == item.created_by %}
+    <a href="{% url 'edit_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">✏️ Edit</a>
+    &nbsp;
+    <a href="{% url 'delete_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">🗑️ Delete</a>
+  {% endif %}
+
+  <a href="{% url 'view_items' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
+    ← Back to Items
+  </a>
+</div>
 {% endblock %}

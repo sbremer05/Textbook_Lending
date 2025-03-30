@@ -1,92 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Librarian Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 0;
-        }
+{% extends "base.html" %}
 
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+{% block title %}Librarian Dashboard{% endblock %}
 
-        h2 {
-            margin-top: 0;
-            color: #2c3e50;
-        }
-
-        p {
-            color: #7f8c8d;
-        }
-
-        h3 {
-            margin-bottom: 10px;
-            color: #34495e;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px 0;
-        }
-
-        a {
-            text-decoration: none;
-            color: #3498db;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        a:hover {
-            color: #2980b9;
-        }
-
-        .button-logout {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .button-logout:hover {
-            background-color: #c0392b;
-        }
-
-        footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: #95a5a6;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <center>
-            
+{% block content %}
+<div class="container">
+    <center>
         <h2>
             {% if user.profile.profile_picture %}
-        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;">
-        {% endif %}
-            Welcome, {{ user.username.title }}! <small>(Librarian)</small></h2>
+                <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;">
+            {% endif %}
+            Welcome, {{ user.username.title }}! <small>(Librarian)</small>
+        </h2>
         <p>Email: {{ user.email }}</p>
 
         <a href="{% url 'search_home' %}" style="
@@ -98,24 +22,20 @@
             border-radius: 5px;
             text-decoration: none;
             font-weight: bold;
-        ">🔍 Go to Search Page</a>        
+        ">🔍 Go to Search Page</a>
+    </center>
 
-        </center>
-        <h2>Dashboard</h2>
-        <ul>
-            <li><a href="{% url 'add_item' %}">📚 Add an Item</a></li>
-            <li><a href="#">📚 Manage Items (Coming Soon)</a></li>
-            <li><a href="#">📂 Manage Collections (Coming Soon)</a></li>
-            <li><a href="#">✅ Approve Borrow Requests (Coming Soon)</a></li>
-            <li><a href="{% url 'librarian_requests' %}">🔼 Upgrade Patrons to Librarians</a></li>
-            <li><a href="{% url 'upload_profile_picture'%}">Upload profile picture</a></li>
-        </ul>
-        <center>
+    <h2>Dashboard</h2>
+    <ul>
+        <li><a href="{% url 'view_items' %}">📚 Manage Items</a></li>
+        <li><a href="{% url 'view_collections' %}">📂 Manage Collections</a></li>
+        <li><a href="#">✅ Approve Borrow Requests (Coming Soon)</a></li>
+        <li><a href="{% url 'librarian_requests' %}">🔼 Upgrade Patrons to Librarians</a></li>
+        <li><a href="{% url 'upload_profile_picture'%}">Upload profile picture</a></li>
+    </ul>
+
+    <center>
         <a href="{% url 'logout' %}" class="button-logout">Logout</a>
-        </center>  
-        <footer>
-            <p>This system is a class project. It is not monitored, and no real information should be submitted.</p>
-        </footer>
-    </div>
-</body>
-</html>
+    </center>
+</div>
+{% endblock %}

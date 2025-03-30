@@ -31,9 +31,9 @@ class Item(models.Model):
 
     def save(self, *args, **kwargs):
         # If assigned to any private collection, enforce single collection only
-        private_collections = [c for c in self.collections.all() if not c.is_public]
-        if private_collections and self.collections.count() > 1:
-            raise ValueError("Item in a private collection can only belong to that one collection.")
+        # private_collections = [c for c in self.collections.all() if not c.is_public]
+        # if private_collections and self.collections.count() > 1:
+        #     raise ValueError("Item in a private collection can only belong to that one collection.")
         super().save(*args, **kwargs)
 
     def __str__(self):

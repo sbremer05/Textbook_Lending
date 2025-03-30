@@ -1,15 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Search Library{% endblock %}
+
 {% block content %}
-<h2>Search the Library</h2>
+<div class="container" style="max-width: 600px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+  <h2 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">🔍 Search the Library</h2>
 
-<form method="get" action="{% url 'search_items' %}">
-    <input type="text" name="q" placeholder="Search items..." required>
-    <button type="submit">Search Items</button>
-</form>
+  <form method="get" action="{% url 'search_items' %}" style="display: flex; flex-direction: column; margin-bottom: 25px;">
+    <input type="text" name="q" placeholder="Search items..." required style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 16px;">
+    <button type="submit" style="padding: 10px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease;">
+      Search Items
+    </button>
+  </form>
 
-<br>
+  <form method="get" action="{% url 'search_collections' %}" style="display: flex; flex-direction: column;">
+    <input type="text" name="q" placeholder="Search collections..." required style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 16px;">
+    <button type="submit" style="padding: 10px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease;">
+      Search Collections
+    </button>
+  </form>
 
-<form method="get" action="{% url 'search_collections' %}">
-    <input type="text" name="q" placeholder="Search collections..." required>
-    <button type="submit">Search Collections</button>
-</form>
+  <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #3498db; text-decoration: none;">
+    ← Back to Dashboard
+  </a>
+</div>
 {% endblock %}

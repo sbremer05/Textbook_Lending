@@ -14,4 +14,10 @@ urlpatterns = [
     path("search/", views.search_home, name="search_home"),
     path("search-items/", views.search_items, name="search_items"),
     path("search-collections/", views.search_collections, name="search_collections"),
+
+    path("items/<int:pk>/edit/", views.edit_item, name="edit_item"),
+    path("items/<int:pk>/delete/", views.delete_item, name="delete_item"),
+    path("collections/<int:pk>/edit/", views.edit_collection, name="edit_collection"),
+    path("collections/<int:pk>/delete/", views.delete_collection, name="delete_collection"),
+
 ]
