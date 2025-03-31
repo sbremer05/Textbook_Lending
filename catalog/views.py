@@ -61,7 +61,7 @@ def add_collection(request):
             "error_message": "You must be logged in to add a collection. Please log in first."
         })
     
-    if request.user.profile.role == 'patron':
+    if request.user.profile.role in ['patron', 'pending']:
         # Patrons can only create public collections
         if request.method == 'POST':
             form = CollectionForm(request.POST)
