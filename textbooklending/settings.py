@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import django_on_heroku
+# import django_on_heroku
 import os
 from dotenv import load_dotenv
 import dj_database_url
@@ -28,15 +28,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-70dp93*)ixi37pnj^gu+*#&k8&qix1oz!e^$g6jl3wksuh%6&s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True" #True
-# DEBUG = True
+# DEBUG = os.getenv("DEBUG", "False") == "True" #True
+DEBUG = True
 
 ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
 
-SITE_ID = 4
+SITE_ID = 6
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -215,4 +215,4 @@ LOGOUT_REDIRECT_URL = "/"
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-django_on_heroku.settings(locals())
+# django_on_heroku.settings(locals())
