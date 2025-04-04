@@ -28,12 +28,12 @@
   <h2>Dashboard</h2>
   <ul>
     <li><a href="{% url 'view_items' %}">📚 Browse Available Books</a></li>
-    <li><a href="#">📖 View Borrowed Books (Coming Soon)</a></li>
-    <li><a href="#">📥 Request a Book (Coming Soon)</a></li>
+    <li><a href="{% url 'my_borrowed_items' %}">📖 View Borrowed Books</a></li>
     <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
     <li><a href="{% url 'view_collections' %}">📂 Manage Collections</a></li>
     <li><a href="{% url 'upload_profile_picture' %}">Upload profile picture</a></li>
   </ul>
+  
 
   <center>
     <form method="POST" action="{% url 'request_librarian' %}">

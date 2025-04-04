@@ -22,6 +22,21 @@
     </p>
   {% endif %}
 
+  {% if user.is_authenticated and user.profile.role == 'patron' %}
+    {% if already_requested %}
+      <p style="color: #e67e22;"><strong>You have already requested this item.</strong></p>
+    {% elif is_borrowed %}
+      <p style="color: #c0392b;"><strong>This item is currently being borrowed.</strong></p>
+    {% else %}
+      <form method="post" action="{% url 'request_borrow' item.id %}">
+        {% csrf_token %}
+        <button type="submit" style="margin-top: 20px; padding: 10px 20px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+          📚 Request to Borrow
+        </button>
+      </form>
+    {% endif %}
+  {% endif %}
+
   {% if user == item.created_by %}
     <a href="{% url 'edit_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">✏️ Edit</a>
     &nbsp;

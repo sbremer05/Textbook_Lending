@@ -20,4 +20,10 @@ urlpatterns = [
     path("collections/<int:pk>/edit/", views.edit_collection, name="edit_collection"),
     path("collections/<int:pk>/delete/", views.delete_collection, name="delete_collection"),
 
+    path("items/<int:pk>/borrow/", views.request_borrow, name="request_borrow"),
+    path("borrow/requests/", views.view_borrow_requests, name="view_borrow_requests"),
+    path("borrow/approve/<int:request_id>/", views.approve_borrow_request, name="approve_borrow_request"),
+    path("borrow/deny/<int:request_id>/", views.deny_borrow_request, name="deny_borrow_request"),
+    path("borrow/return/<int:request_id>/", views.return_borrowed_item, name="return_borrowed_item"),
+    path("borrow/my-items/", views.my_borrowed_items, name="my_borrowed_items"),
 ]
