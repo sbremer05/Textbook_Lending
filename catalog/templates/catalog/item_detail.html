@@ -23,7 +23,9 @@
   {% endif %}
 
   {% if user.is_authenticated %}
-    {% if already_requested %}
+    {% if is_borrowed_by_user %}
+      <p style="color: #c0392b;"><strong>You are currently borrowing this item.</strong></p>
+    {% elif already_requested %}
       <p style="color: #e67e22;"><strong>You have already requested this item.</strong></p>
     {% elif is_borrowed %}
       <p style="color: #c0392b;"><strong>This item is currently being borrowed.</strong></p>
@@ -43,6 +45,31 @@
     <a href="{% url 'delete_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">🗑️ Delete</a>
   {% endif %}
 
+  <div class="reviews-section" style="margin-top: 40px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+    <h3 style="color: #2c3e50;">Reviews</h3>
+    {% if reviews %}
+      <ul style="list-style: none; padding: 0;">
+        {% for review in reviews %}
+          <li style="border-bottom: 1px solid #ecf0f1; padding: 10px 0;">
+            <p style="margin: 0;">
+              <strong>{{ review.user.username }}</strong>
+              <span>
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= review.rating %}
+                    ⭐
+                  {% endif %}
+                {% endfor %}
+              </span>
+            </p>
+            <p style="margin: 5px 0 0 0;">{{ review.comment }}</p>
+            <p style="font-size: 0.9em; color: #7f8c8d;">Reviewed on {{ review.created_at|date:"M d, Y" }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color: #7f8c8d;">No reviews yet. Be the first to review this item!</p>
+    {% endif %}
+  </div>
   <a href="{% url 'view_items' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
     ← Back to Items
   </a>

@@ -40,18 +40,27 @@ class Item(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Rating(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="ratings")
+  
+class Review(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    value = models.PositiveIntegerField()  # 1–5 stars
-
-class Comment(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="comments")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField()
+    rating = models.PositiveSmallIntegerField(choices=[(i, i) for i in range(1, 6)])
+    comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('item', 'user')
+
+# class Rating(models.Model):
+#     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="ratings")
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     value = models.PositiveIntegerField()  # 1–5 stars
+
+# class Comment(models.Model):
+#     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="comments")
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     text = models.TextField()
+#     created_at = models.DateTimeField(auto_now_add=True)
 
 class BorrowRequest(models.Model):
     STATUS_CHOICES = [

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if review %}
+    Edit Review – {{ item.title }}
+  {% else %}
+    Review {{ item.title }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <h2 style="color: #2c3e50;">
+      {% if review %}
+        📝 Edit Your Review for "{{ item.title }}"
+      {% else %}
+        ⭐ Leave a Review for "{{ item.title }}"
+      {% endif %}
+    </h2>
+
+    {% if user.is_authenticated and has_borrowed %}
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="rating" style="display: block; margin-top: 20px; font-weight: bold;">Rating:</label>
+            <select name="rating" id="rating" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                <option value="">Choose a rating</option>
+                <option value="5" {% if review and review.rating == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐ – Amazing</option>
+                <option value="4" {% if review and review.rating == 4 %}selected{% endif %}>⭐⭐⭐⭐ – Great</option>
+                <option value="3" {% if review and review.rating == 3 %}selected{% endif %}>⭐⭐⭐ – Good</option>
+                <option value="2" {% if review and review.rating == 2 %}selected{% endif %}>⭐⭐ – Okay</option>
+                <option value="1" {% if review and review.rating == 1 %}selected{% endif %}>⭐ – Poor</option>
+            </select>
+
+            <label for="comment" style="display: block; margin-top: 20px; font-weight: bold;">Comment (optional):</label>
+            <textarea name="comment" id="comment" rows="5" placeholder="Share your thoughts..." style="width: 100%; padding: 10px; margin-top: 5px; resize: vertical;">{% if review %}{{ review.comment }}{% endif %}</textarea>
+            <p style="color: #7f8c8d; font-size: 0.9em; margin-top: 10px;">
+                Your review will be visible to other users.
+                Please be respectful and constructive.
+                Inappropriate content may be removed.
+            </p>
+
+            <button type="submit" style="margin-top: 20px; padding: 10px 20px; background-color: #f1c40f; color: #2c3e50; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                {% if review %}📝 Update Review{% else %}⭐ Submit Review{% endif %}
+            </button>
+        </form>
+    {% elif not user.is_authenticated %}
+        <p>You must be <a href="{% url 'login' %}">logged in</a> to leave a review.</p>
+    {% else %}
+        <p>You can only review books you're currently borrowing.</p>
+    {% endif %}
+
+    <a href="{% url 'my_borrowed_items' %}" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none;">
+        ← Back to My Borrowed Items
+    </a>
+</div>
+{% endblock %}

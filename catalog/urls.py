@@ -26,4 +26,6 @@ urlpatterns = [
     path("borrow/deny/<int:request_id>/", views.deny_borrow_request, name="deny_borrow_request"),
     path("borrow/return/<int:request_id>/", views.return_borrowed_item, name="return_borrowed_item"),
     path("borrow/my-items/", views.my_borrowed_items, name="my_borrowed_items"),
+
+    path('items/<int:pk>/review/', views.submit_review, name='submit_review'),
 ]

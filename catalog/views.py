@@ -3,13 +3,54 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
-from .models import Item, Collection, BorrowRequest
+from .models import Item, Collection, BorrowRequest, Review
 from .forms import ItemForm, CollectionForm
 
 # =====================
 # Item Views
 # =====================
 
+@login_required
+def submit_review(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+
+    has_borrowed = BorrowRequest.objects.filter(
+    item=item, patron=request.user, status='approved'
+    ).exists()
+
+    if not has_borrowed:
+        messages.error(request, "You can only review items you've borrowed.")
+        return redirect("item_detail", pk=pk)
+
+    review = item.reviews.filter(user=request.user).first()
+
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+
+        if rating:
+            rating = int(rating)
+            if 1 <= rating <= 5:
+                if review:
+                    review.rating = rating
+                    review.comment = comment
+                    review.save()
+                    messages.success(request, "✅ Review updated successfully!")
+                else:
+                    item.reviews.create(user=request.user, rating=rating, comment=comment)
+                    messages.success(request, "✅ Review submitted successfully!")
+            else:
+                messages.error(request, "Rating must be between 1 and 5.")
+        else:
+            messages.error(request, "Rating is required.")
+
+        return redirect("item_detail", pk=pk)
+
+    return render(request, "catalog/submit_review.html", {
+        "item": item,
+        "review": review,
+        "has_borrowed": has_borrowed
+    })
 def add_item(request):
     if not request.user.is_authenticated:
         return render(request, "catalog/add_item.html", {
@@ -49,7 +90,9 @@ def item_detail(request, pk):
 
     has_access = False
     for collection in collections:
-        if collection.is_public or request.user == collection.created_by or request.user in collection.allowed_users.all():
+        if (collection.is_public or 
+            request.user == collection.created_by or 
+            request.user in collection.allowed_users.all()):
             has_access = True
             break
 
@@ -58,15 +101,25 @@ def item_detail(request, pk):
 
     already_requested = False
     is_borrowed = BorrowRequest.objects.filter(item=item, status='approved').exists()
+    is_borrowed_by_user = False
     if request.user.is_authenticated:
-        already_requested = BorrowRequest.objects.filter(item=item, patron=request.user, status='pending').exists()
+        already_requested = BorrowRequest.objects.filter(
+            item=item, patron=request.user, status='pending'
+        ).exists()
+        is_borrowed_by_user = BorrowRequest.objects.filter(
+            item=item, patron=request.user, status='approved'
+        ).exists()
+    reviews = item.reviews.all().order_by('-created_at')
 
     return render(request, 'catalog/item_detail.html', {
         'item': item,
         'collections': collections,
         'already_requested': already_requested,
-        'is_borrowed': is_borrowed
+        'is_borrowed': is_borrowed,
+        'reviews': reviews,
+        'is_borrowed_by_user': is_borrowed_by_user,
     })
+
 
 def edit_item(request, pk):
     item = get_object_or_404(Item, pk=pk)
@@ -265,8 +318,19 @@ def return_borrowed_item(request, request_id):
 
 @login_required
 def my_borrowed_items(request):
-    borrowed = BorrowRequest.objects.filter(patron=request.user, status='approved').select_related('item')
-    return render(request, 'catalog/my_borrowed_items.html', {'borrowed_items': borrowed})
+    borrowed = BorrowRequest.objects.filter(
+        patron=request.user,
+        status='approved'
+    ).select_related('item')
+
+    user_reviews = Review.objects.filter(user=request.user)
+    
+    reviews_by_item = {review.item_id: review for review in user_reviews}
+
+    return render(request, 'catalog/my_borrowed_items.html', {
+        'borrowed_items': borrowed,
+        'reviews_by_item': reviews_by_item
+    })
 
 # =====================
 # S3 Cleanup
