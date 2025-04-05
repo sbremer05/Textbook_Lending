@@ -22,7 +22,7 @@
     </p>
   {% endif %}
 
-  {% if user.is_authenticated and user.profile.role == 'patron' %}
+  {% if user.is_authenticated %}
     {% if already_requested %}
       <p style="color: #e67e22;"><strong>You have already requested this item.</strong></p>
     {% elif is_borrowed %}
