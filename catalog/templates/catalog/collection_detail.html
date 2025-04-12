@@ -16,6 +16,10 @@
     <a href="{% url 'delete_collection' collection.id %}">🗑️ Delete</a>
   {% endif %}
 
+  {% if user.is_authenticated and user.profile.role == 'librarian' and collection.is_public == False%}
+    <a href="{% url 'view_collection_access_requests' collection.id %}" style="margin-left: 20px; color: #3498db; text-decoration: none; font-weight: bold;">📥 View Access Requests</a>
+  {% endif %}
+
   <form method = "get" action="">
     <label for="query" style="font-weight: bold; color: #2c3e50;">Search in this Collection:</label>
     <input type="text" id="query" name="query" placeholder="Enter keywords..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #bdc3c7; border-radius: 5px;">
