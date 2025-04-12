@@ -15,6 +15,11 @@
   {% endif %}
 
   {% if item.collections.exists %}
+    {% if user.is_authenticated and user.profile.role == 'librarian' %}
+      <p>
+        <a href="{% url 'update_item_collections' item.id%}">Move Item To/From Collections</a>
+      </p>
+    {% endif %}
     <p><strong style="color: #2c3e50;">Collections:</strong>
       {% for col in item.collections.all %}
         <a href="{% url 'collection_detail' col.id %}">{{ col.title }}</a>{% if not forloop.last %}, {% endif %}

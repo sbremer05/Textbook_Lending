@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
 from .models import Item, Collection, BorrowRequest, Review
-from .forms import ItemForm, CollectionForm
+from .forms import ItemForm, CollectionForm, UpdateItemCollectionForm
 
 # =====================
 # Item Views
@@ -204,13 +204,40 @@ def view_collections(request):
 
     return render(request, "catalog/view_collections.html", {"collections": collections.distinct()})
 
+def update_item_collections(request, pk):
+    if not request.user.is_authenticated or request.user.profile.role != 'librarian':
+        return render(request, "catalog/update_item_collections.html", {
+            "form": None,
+            "error_message": "You do not have permission to access this page."
+        })
+    item = get_object_or_404(Item, pk=pk)
+    if request.method == 'POST':
+        form = UpdateItemCollectionForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item collections updated successfully!")
+            return redirect('item_detail', pk=item.pk)
+        else:
+            messages.error(request, "Error updating item collections.")
+    else:
+        form = UpdateItemCollectionForm(instance=item)
+    return render(request, 'catalog/update_item_collections.html', {'form': form, 'item': item})
+
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
     if not collection.is_public and request.user != collection.created_by and request.user not in collection.allowed_users.all():
         return redirect('view_collections')
+    
+    query = request.GET.get("query", "")
 
-    items = collection.items.all()
-    return render(request, "catalog/collection_detail.html", {"collection": collection, "items": items})
+    if query:
+        items = collection.items.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+    else:
+        items = collection.items.all()
+    return render(request, "catalog/collection_detail.html", 
+                  {"collection": collection, "items": items, "query": query})
 
 def edit_collection(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
