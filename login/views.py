@@ -123,3 +123,19 @@ def request_librarian(request):
         profile.save()
         messages.success(request, "Your request for librarian status has been submitted!")
     return redirect("home")
+
+@login_required
+def profile_view(request):
+    user = request.user
+    profile = user.profile
+    # Use first_name and last_name if available; otherwise, fallback to username.
+    full_name = (f"{user.first_name} {user.last_name}").strip() if (user.first_name or user.last_name) else user.username
+
+    context = {
+        'full_name': full_name,
+        'email': user.email,
+        'profile_picture': profile.profile_picture.url if profile.profile_picture else None,
+        'date_joined': user.date_joined,
+        'role': profile.role,
+    }
+    return render(request, "login/profile.html", context)
