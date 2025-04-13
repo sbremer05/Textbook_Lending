@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
-from .models import Item, Collection, BorrowRequest, Review
-from .forms import ItemForm, CollectionForm
+from .models import Item, Collection, BorrowRequest, Review, CollectionAccessRequest
+from .forms import ItemForm, CollectionForm, UpdateItemCollectionForm
 
 # =====================
 # Item Views
@@ -152,6 +152,38 @@ def delete_item(request, pk):
 # Collection Views
 # =====================
 
+def view_collection_access_requests(request, pk):
+    if request.user.profile.role != 'librarian':
+        return redirect('home')
+
+    collection = get_object_or_404(Collection, pk=pk)
+    
+    requests = CollectionAccessRequest.objects.filter(collection=collection) \
+                   .select_related('collection', 'user').order_by('-requested_at')
+    
+    return render(request, 'catalog/view_collection_access_requests.html', {'requests': requests})
+
+def approve_collection_access(request, request_id):
+    if request.user.profile.role != 'librarian':
+        return redirect('home')
+    access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
+    if access_request.status == 'pending':
+        access_request.status = 'approved'
+        access_request.collection.allowed_users.add(access_request.user)
+        access_request.save()
+        messages.success(request, f"✅ Access request for '{access_request.collection.title}' approved.")
+    return redirect('view_collection_access_requests', pk=access_request.collection.pk)
+
+def deny_collection_access(request, request_id):
+    if request.user.profile.role != 'librarian':
+        return redirect('home')
+    access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
+    if access_request.status == 'pending':
+        access_request.status = 'denied'
+        access_request.save()
+        messages.info(request, f"❌ Access request for '{access_request.collection.title}' denied.")
+    return redirect('view_collection_access_requests', pk=access_request.collection.pk)
+
 def add_collection(request):
     if not request.user.is_authenticated:
         return render(request, "catalog/add_collection.html", {
@@ -189,28 +221,91 @@ def add_collection(request):
 
     return render(request, "catalog/add_collection.html", {"form": form})
 
+def request_collection_access(request, pk):
+    collection = get_object_or_404(Collection, pk=pk)
+    if request.user.is_authenticated:
+        if collection.is_public:
+            messages.info(request, "This collection is public. No request needed.")
+            return redirect('collection_detail', pk=pk)
+        elif request.user == collection.created_by or request.user in collection.allowed_users.all():
+            messages.info(request, "You already have access to this collection.")
+            return redirect('collection_detail', pk=pk)
+
+        elif CollectionAccessRequest.objects.filter(collection=collection, user=request.user).exists():
+            messages.info(request, "You have already requested access to this collection.")
+            return redirect('collection_detail', pk=pk)
+        
+        existing_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user, status='pending').first()
+        if existing_request:
+            messages.info(request, "You have already requested access to this collection.")
+            return redirect('collection_detail', pk=pk)
+        
+        if request.method == 'POST':
+            access_request = CollectionAccessRequest.objects.create(
+                collection=collection,
+                user=request.user
+            )
+            messages.success(request, "Access request submitted successfully!")
+            return redirect('collection_detail', pk=pk)
+    else:
+        messages.error(request, "You must be logged in to request access to a collection.")
+        return redirect('login')
+    return render(request, "catalog/request_collection_access.html", {
+        "collection": collection,
+        "request": request
+    })
+
+
 def view_collections(request):
     user = request.user
     if user.is_authenticated and hasattr(user, "profile"):
-        profile = user.profile
-        if profile.role == "librarian":
-            collections = Collection.objects.all()
-        elif profile.role == "patron":
-            collections = Collection.objects.filter(is_public=True) | Collection.objects.filter(allowed_users=user)
-        else:
-            collections = Collection.objects.filter(is_public=True)
+        collections = Collection.objects.all()
+        # profile = user.profile
+        # if profile.role == "librarian":
+        #     collections = Collection.objects.all()
+        # elif profile.role == "patron":
+        #     collections = Collection.objects.filter(is_public=True) | Collection.objects.filter(allowed_users=user)
+        # else:
+        #     collections = Collection.objects.filter(is_public=True)
     else:
         collections = Collection.objects.filter(is_public=True)
 
     return render(request, "catalog/view_collections.html", {"collections": collections.distinct()})
 
+def update_item_collections(request, pk):
+    if not request.user.is_authenticated or request.user.profile.role != 'librarian':
+        return render(request, "catalog/update_item_collections.html", {
+            "form": None,
+            "error_message": "You do not have permission to access this page."
+        })
+    item = get_object_or_404(Item, pk=pk)
+    if request.method == 'POST':
+        form = UpdateItemCollectionForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item collections updated successfully!")
+            return redirect('item_detail', pk=item.pk)
+        else:
+            messages.error(request, "Error updating item collections.")
+    else:
+        form = UpdateItemCollectionForm(instance=item)
+    return render(request, 'catalog/update_item_collections.html', {'form': form, 'item': item})
+
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
     if not collection.is_public and request.user != collection.created_by and request.user not in collection.allowed_users.all():
         return redirect('view_collections')
+    
+    query = request.GET.get("query", "")
 
-    items = collection.items.all()
-    return render(request, "catalog/collection_detail.html", {"collection": collection, "items": items})
+    if query:
+        items = collection.items.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+    else:
+        items = collection.items.all()
+    return render(request, "catalog/collection_detail.html", 
+                  {"collection": collection, "items": items, "query": query})
 
 def edit_collection(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
