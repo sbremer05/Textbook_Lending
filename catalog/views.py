@@ -172,7 +172,7 @@ def approve_collection_access(request, request_id):
         access_request.collection.allowed_users.add(access_request.user)
         access_request.save()
         messages.success(request, f"✅ Access request for '{access_request.collection.title}' approved.")
-    return redirect('view_collection_access_requests')
+    return redirect('view_collection_access_requests', pk=access_request.collection.pk)
 
 def deny_collection_access(request, request_id):
     if request.user.profile.role != 'librarian':
@@ -182,7 +182,7 @@ def deny_collection_access(request, request_id):
         access_request.status = 'denied'
         access_request.save()
         messages.info(request, f"❌ Access request for '{access_request.collection.title}' denied.")
-    return redirect('view_collection_access_requests')
+    return redirect('view_collection_access_requests', pk=access_request.collection.pk)
 
 def add_collection(request):
     if not request.user.is_authenticated:
