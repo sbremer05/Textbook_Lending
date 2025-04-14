@@ -12,6 +12,7 @@
         <th style="padding: 10px;">Patron</th>
         <th style="padding: 10px;">Requested At</th>
         <th style="padding: 10px;">Status</th>
+        <th style="padding: 10px;">Due Date</th>
         <th style="padding: 10px;">Actions</th>
       </tr>
       {% for req in requests %}
@@ -20,6 +21,13 @@
           <td style="padding: 10px;">{{ req.patron.get_full_name|default:req.patron.username }}</td>
           <td style="padding: 10px;">{{ req.requested_at|date:"M d, Y H:i" }}</td>
           <td style="padding: 10px;">{{ req.get_status_display }}</td>
+          <td style="padding: 10px;">
+            {% if req.due_date %}
+              {{ req.due_date|date:"M d, Y" }}
+            {% else %}
+              —
+            {% endif %}
+          </td>
           <td style="padding: 10px;">
             {% if req.status == "pending" %}
               <a href="{% url 'approve_borrow_request' req.id %}" style="color: green; font-weight: bold;">✅ Approve</a>
