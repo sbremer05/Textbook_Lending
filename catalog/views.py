@@ -5,7 +5,8 @@ from django.db.models import Q
 from django.http import HttpResponseForbidden
 from .models import Item, Collection, BorrowRequest, Review, CollectionAccessRequest
 from .forms import ItemForm, CollectionForm, UpdateItemCollectionForm
-
+from datetime import timedelta
+from django.utils import timezone
 # =====================
 # Item Views
 # =====================
@@ -102,23 +103,33 @@ def item_detail(request, pk):
     already_requested = False
     is_borrowed = BorrowRequest.objects.filter(item=item, status='approved').exists()
     is_borrowed_by_user = False
+    borrow_due_date = None
     if request.user.is_authenticated:
         already_requested = BorrowRequest.objects.filter(
             item=item, patron=request.user, status='pending'
         ).exists()
-        is_borrowed_by_user = BorrowRequest.objects.filter(
-            item=item, patron=request.user, status='approved'
-        ).exists()
+        try:
+            current_borrow = BorrowRequest.objects.get(
+                item=item, patron=request.user, status='approved'
+            )
+            is_borrowed_by_user = True
+            borrow_due_date = current_borrow.due_date
+        except BorrowRequest.DoesNotExist:
+            pass
+
     reviews = item.reviews.all().order_by('-created_at')
 
-    return render(request, 'catalog/item_detail.html', {
+    context = {
         'item': item,
         'collections': collections,
         'already_requested': already_requested,
         'is_borrowed': is_borrowed,
         'reviews': reviews,
         'is_borrowed_by_user': is_borrowed_by_user,
-    })
+        'borrow_due_date': borrow_due_date,
+    }
+    return render(request, 'catalog/item_detail.html', context)
+
 
 
 def edit_item(request, pk):
@@ -386,10 +397,25 @@ def approve_borrow_request(request, request_id):
     if request.user.profile.role != 'librarian':
         return redirect('home')
 
+    # Mark any other approved requests for this item as returned.
     BorrowRequest.objects.filter(item=borrow_request.item, status='approved').update(status='returned')
+    
+    # Approve this borrow request and set the due date.
     borrow_request.status = 'approved'
+    lending_period = timedelta(days=14)  # Change this if you need a different lending period.
+    borrow_request.due_date = timezone.now() + lending_period
     borrow_request.save()
-    messages.success(request, f"✅ Borrow request for '{borrow_request.item.title}' approved.")
+
+    # Update the item's status from 'available' to 'checked_out'.
+    item = borrow_request.item
+    if item.status != 'checked_out':  # Safety check if it's already checked out.
+        item.status = 'checked_out'
+        item.save()
+
+    messages.success(
+        request,
+        f"✅ Borrow request for '{borrow_request.item.title}' approved. Due date is set to {(borrow_request.due_date).strftime('%Y-%m-%d')}."
+    )
     return redirect('view_borrow_requests')
 
 @login_required

@@ -3,44 +3,33 @@
 {% block title %}Patron Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
-  <center>
-    <h2>
+<div class="container my-5" style="max-width: 800px;">
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body text-center">
       {% if user.profile.profile_picture %}
-        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px;" />
+        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" class="rounded-circle mb-3" style="width:150px; height:150px; object-fit:cover;">
       {% endif %}
-      Welcome, {{ user.username.title }}! <small>(Patron)</small>
-    </h2>
-    <p>Email: {{ user.email }}</p>
+      <h2 class="card-title">Welcome, {{ user.username|title }}! <small class="text-muted">(Patron)</small></h2>
+      <p class="card-text">Email: {{ user.email }}</p>
+      <a href="{% url 'search_home' %}" class="btn btn-primary btn-lg mb-3">🔍 Go to Search Page</a>
+    </div>
+  </div>
 
-    <a href="{% url 'search_home' %}" style="
-      display: inline-block;
-      margin: 10px 0 20px;
-      padding: 10px 20px;
-      background-color: #3498db;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
-    ">🔍 Go to Search Page</a>
-  </center>
+  <h3 class="mb-3">Dashboard</h3>
+  <div class="list-group mb-4">
+    <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Available Books</a>
+    <a href="{% url 'my_borrowed_items' %}" class="list-group-item list-group-item-action">📖 View Borrowed Books</a>
+    <a href="#" class="list-group-item list-group-item-action disabled">🔔 Notifications (Coming Soon)</a>
+    <a href="{% url 'view_collections' %}" class="list-group-item list-group-item-action">📂 Manage Collections</a>
+    <a href="{% url 'upload_profile_picture' %}" class="list-group-item list-group-item-action">Upload Profile Picture</a>
+  </div>
 
-  <h2>Dashboard</h2>
-  <ul>
-    <li><a href="{% url 'view_items' %}">📚 Browse Available Books</a></li>
-    <li><a href="{% url 'my_borrowed_items' %}">📖 View Borrowed Books</a></li>
-    <li><a href="#">🔔 Notifications (Coming Soon)</a></li>
-    <li><a href="{% url 'view_collections' %}">📂 Manage Collections</a></li>
-    <li><a href="{% url 'upload_profile_picture' %}">Upload profile picture</a></li>
-  </ul>
-  
-
-  <center>
-    <form method="POST" action="{% url 'request_librarian' %}">
+  <div class="text-center">
+    <form method="POST" action="{% url 'request_librarian' %}" class="mb-3">
       {% csrf_token %}
-      <button type="submit" class="button-request">Request Librarian Status</button>
+      <button type="submit" class="btn btn-outline-primary">Request Librarian Status</button>
     </form>
-    <a href="{% url 'logout' %}" class="button-logout">Logout</a>
-  </center>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+  </div>
 </div>
 {% endblock %}
