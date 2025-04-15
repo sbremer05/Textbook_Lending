@@ -37,7 +37,7 @@ ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost',
 # Application definition
 
 # SITE_ID = 1
-SITE_ID = 6 if DEBUG else 4
+SITE_ID = 6 # if DEBUG else 4
 
 INSTALLED_APPS = [
     'django.contrib.admin',
