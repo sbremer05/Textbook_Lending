@@ -37,7 +37,9 @@ ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost',
 # Application definition
 
 # SITE_ID = 1
-SITE_ID = 4 # if DEBUG else 4
+#DEBUG = os.getenv("DEBUG", "False") == "True"
+SITE_ID = int(os.getenv("SITE_ID", 6 if DEBUG else 4))
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -147,22 +149,18 @@ WSGI_APPLICATION = 'textbooklending.wsgi.application'
 # }
 #if 'DATABASE_URL' in os.environ:
 
-# if not DEBUG:
-#     # Production (Heroku Postgres)
-#     DATABASES = {
-#         'default': dj_database_url.config(conn_max_age=600)
-#     }
-# else:
-#     # Local development (SQLite)
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         }
-#     }
-
-DATABASES = {
+if not DEBUG:
+    # Production (Heroku Postgres)
+    DATABASES = {
         'default': dj_database_url.config(conn_max_age=600)
+    }
+else:
+    # Local development (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
 
 
