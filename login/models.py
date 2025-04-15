@@ -12,6 +12,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)  # Allows user selection
     is_setup = models.BooleanField(default=False)  # Tracks if the user has chosen a role
+    is_guest = models.BooleanField(default=True)
     profile_picture = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
     def __str__(self):
         return f"{self.user.username} - {self.role if self.role else 'No Role Selected'}"
