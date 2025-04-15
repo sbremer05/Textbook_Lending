@@ -38,7 +38,8 @@ ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost',
 
 # SITE_ID = 1
 #DEBUG = os.getenv("DEBUG", "False") == "True"
-SITE_ID = int(os.getenv("SITE_ID", 6 if DEBUG else 4))
+# SITE_ID = int(os.getenv("SITE_ID", 6 if DEBUG else 4))
+SITE_ID = int(os.getenv("SITE_ID", 4))
 
 
 INSTALLED_APPS = [
