@@ -89,6 +89,8 @@ class BorrowRequest(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     requested_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # New field: due date for when the borrowed item must be returned.
+    due_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.patron.username} → {self.item.title} ({self.status})"
