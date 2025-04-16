@@ -39,7 +39,7 @@
     {% endif %}
   {% endif %}
 
-  {% if user == item.created_by %}
+  {% if user.profile.role == 'librarian' %}
     <a href="{% url 'edit_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">✏️ Edit</a>
     &nbsp;
     <a href="{% url 'delete_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">🗑️ Delete</a>
