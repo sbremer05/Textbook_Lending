@@ -157,7 +157,7 @@ def delete_item(request, pk):
         messages.success(request, "🗑️ Item deleted successfully!")
         return redirect("view_items")
 
-    return render(request, "catalog/confirm_delete.html", {"object": item, "type": "Item"})
+    return render(request, "catalog/delete_item.html", {"item": item, "type": "Item"})
 
 # =====================
 # Collection Views
