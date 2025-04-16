@@ -13,6 +13,20 @@ class Collection(models.Model):
     def __str__(self):
         return self.title
 
+class CollectionAccessRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied')
+    ]
+
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name='access_requests')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collection_requests')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    requested_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} → {self.collection.title} ({self.status})"
 
 class Item(models.Model):
     STATUS_CHOICES = [
@@ -75,6 +89,8 @@ class BorrowRequest(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     requested_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # New field: due date for when the borrowed item must be returned.
+    due_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.patron.username} → {self.item.title} ({self.status})"

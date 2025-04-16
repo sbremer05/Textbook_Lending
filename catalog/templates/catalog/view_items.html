@@ -3,39 +3,44 @@
 {% block title %}📚 View Items{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  <h1 style="color: #2c3e50; text-align: center; margin-bottom: 30px;">📚 View Items</h1>
+<div class="container my-5" style="max-width: 800px;">
+  <h1 class="text-center text-primary mb-4">📚 View Items</h1>
 
   {% if user.profile.role == "librarian" %}
-    <a href="{% url 'add_item' %}" style="display: inline-block; margin-bottom: 20px; padding: 10px 20px; background-color: #27ae60; color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">
-      ➕ Add New Item
-    </a>
+    <div class="text-center mb-4">
+      <a href="{% url 'add_item' %}" class="btn btn-success btn-lg">
+        ➕ Add New Item
+      </a>
+    </div>
   {% endif %}
 
   {% if items %}
-    <ul style="list-style: none; padding: 0;">
+    <div class="list-group">
       {% for item in items %}
-        <li style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #ecf0f1;">
-            <a href="{% url 'item_detail' item.pk %}" style="text-decoration: none; color: inherit;">
-                <strong>{{ item.title }}</strong> is <strong>{{ item.status }}</strong> at <strong>{{ item.location }}</strong><br>
-                {% if item.image %}
-                  <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width: 150px; margin-top: 10px; border-radius: 5px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
-                {% else %}
-                  <p style="color: #7f8c8d;">No cover available</p>
-                {% endif %}
-              </a>
-              
-        </li>
+        <a href="{% url 'item_detail' item.pk %}" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between align-items-center">
+            <h5 class="mb-1">{{ item.title }}</h5>
+            <small class="text-muted">Status: {{ item.status }}</small>
+          </div>
+          <p class="mb-1">Location: {{ item.location }}</p>
+          {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }} cover" class="img-fluid rounded" style="max-width: 150px;">
+          {% else %}
+            <p class="text-muted">No cover available</p>
+          {% endif %}
+        </a>
       {% endfor %}
-    </ul>
+    </div>
   {% else %}
-    <p style="color: #7f8c8d; text-align: center; font-size: 1.1em;">No books available.</p>
+    <p class="text-center text-muted fs-5">No books available.</p>
   {% endif %}
 
-  {% if user.profile.role == "librarian" %}
-    <a href="{% url 'librarian_dashboard' %}" style="display: inline-block; margin-top: 30px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Dashboard</a>
-  {% else %}
-    <a href="{% url 'home' %}" style="display: inline-block; margin-top: 30px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Dashboard</a>
-  {% endif %}
+  <div class="text-center mt-4">
+    {% if user.profile.role == "librarian" %}
+      <a href="{% url 'librarian_dashboard' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
+    {% else %}
+      <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

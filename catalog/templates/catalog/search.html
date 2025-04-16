@@ -19,15 +19,15 @@
       Search Collections
     </button>
   </form>
-  {% if user.is_authenticated %}
-    {% if user.profile.role == "librarian" %}
-      <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #3498db; text-decoration: none;">
-        ← Back to Dashboard
-      </a>
-    {% endif %}
-  {% endif %}
+  {% if user.is_authenticated and user.profile.role == "librarian" %}
+  <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #3498db; text-decoration: none;">
+    ← Back to Dashboard
+  </a>
+{% else %}
   <a href="{% url 'home' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #3498db; text-decoration: none;">
     ← Back to Dashboard
   </a>
+{% endif %}
+
 </div>
 {% endblock %}

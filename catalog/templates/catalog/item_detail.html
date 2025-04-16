@@ -3,41 +3,19 @@
 {% block title %}{{ item.title }}{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  <h1 style="color: #2c3e50;">{{ item.title }}</h1>
-  <p><strong style="color: #2c3e50;">Identifier:</strong> {{ item.identifier }}</p>
-  <p><strong style="color: #2c3e50;">Status:</strong> {{ item.status }}</p>
-  <p><strong style="color: #2c3e50;">Location:</strong> {{ item.location }}</p>
-  <p style="color: #34495e;">{{ item.description }}</p>
-
-  {% if item.image %}
-    <img src="{{ item.image.url }}" alt="{{ item.title }}" style="display: block; max-width: 100%; height: auto; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
-  {% endif %}
-
-  {% if item.collections.exists %}
-    <p><strong style="color: #2c3e50;">Collections:</strong>
-      {% for col in item.collections.all %}
-        <a href="{% url 'collection_detail' col.id %}">{{ col.title }}</a>{% if not forloop.last %}, {% endif %}
-      {% endfor %}
-    </p>
-  {% endif %}
-
-  {% if user.is_authenticated %}
-    {% if is_borrowed_by_user %}
-      <p style="color: #c0392b;"><strong>You are currently borrowing this item.</strong></p>
-    {% elif already_requested %}
-      <p style="color: #e67e22;"><strong>You have already requested this item.</strong></p>
-    {% elif is_borrowed %}
-      <p style="color: #c0392b;"><strong>This item is currently being borrowed.</strong></p>
-    {% else %}
-      <form method="post" action="{% url 'request_borrow' item.id %}">
-        {% csrf_token %}
-        <button type="submit" style="margin-top: 20px; padding: 10px 20px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-          📚 Request to Borrow
-        </button>
-      </form>
+<div class="container my-5">
+  <div class="card shadow-sm">
+    {% if item.image %}
+      <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
     {% endif %}
-  {% endif %}
+    <div class="card-body">
+      <h1 class="card-title text-primary">{{ item.title }}</h1>
+      <p class="card-text">
+        <strong>Identifier:</strong> {{ item.identifier }}<br>
+        <strong>Status:</strong> {{ item.status }}<br>
+        <strong>Location:</strong> {{ item.location }}
+      </p>
+      <p class="card-text">{{ item.description }}</p>
 
   {% if user.profile.role == 'librarian' %}
     <a href="{% url 'edit_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">✏️ Edit</a>
@@ -45,33 +23,73 @@
     <a href="{% url 'delete_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">🗑️ Delete</a>
   {% endif %}
 
-  <div class="reviews-section" style="margin-top: 40px; padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
-    <h3 style="color: #2c3e50;">Reviews</h3>
-    {% if reviews %}
-      <ul style="list-style: none; padding: 0;">
-        {% for review in reviews %}
-          <li style="border-bottom: 1px solid #ecf0f1; padding: 10px 0;">
-            <p style="margin: 0;">
-              <strong>{{ review.user.username }}</strong>
-              <span>
-                {% for i in "12345"|make_list %}
-                  {% if forloop.counter <= review.rating %}
-                    ⭐
-                  {% endif %}
-                {% endfor %}
-              </span>
-            </p>
-            <p style="margin: 5px 0 0 0;">{{ review.comment }}</p>
-            <p style="font-size: 0.9em; color: #7f8c8d;">Reviewed on {{ review.created_at|date:"M d, Y" }}</p>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p style="color: #7f8c8d;">No reviews yet. Be the first to review this item!</p>
-    {% endif %}
+      {% if user.is_authenticated %}
+        {% if is_borrowed_by_user %}
+          <div class="alert alert-info mt-3" role="alert">
+            You are currently borrowing this item.
+            {% if borrow_due_date %}
+              <br>
+              <small>Due Date: {{ borrow_due_date|date:"M d, Y" }}</small>
+            {% endif %}
+          </div>
+        {% elif already_requested %}
+          <div class="alert alert-warning mt-3" role="alert">
+            You have already requested this item.
+          </div>
+        {% elif is_borrowed %}
+          <div class="alert alert-warning mt-3" role="alert">
+            This item is currently being borrowed.
+          </div>
+        {% else %}
+          <form method="post" action="{% url 'request_borrow' item.id %}" class="mt-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-lg">
+              📚 Request to Borrow
+            </button>
+          </form>
+        {% endif %}
+      {% endif %}
+
+      {% if user == item.created_by %}
+        <div class="mt-4">
+          <a href="{% url 'edit_item' item.id %}" class="btn btn-outline-primary">✏️ Edit</a>
+          <a href="{% url 'delete_item' item.id %}" class="btn btn-outline-danger">🗑️ Delete</a>
+        </div>
+      {% endif %}
+    </div>
   </div>
-  <a href="{% url 'view_items' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
-    ← Back to Items
-  </a>
+
+  <!-- Reviews Section -->
+  <div class="card mt-5 shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title text-secondary">Reviews</h3>
+      {% if reviews %}
+        <ul class="list-unstyled">
+          {% for review in reviews %}
+            <li class="border-bottom pb-3 mb-3">
+              <p class="mb-1">
+                <strong>{{ review.user.username }}</strong>
+                <span>
+                  {% for i in "12345"|make_list %}
+                    {% if forloop.counter <= review.rating %}
+                      <span class="text-warning">&#9733;</span>
+                    {% endif %}
+                  {% endfor %}
+                </span>
+              </p>
+              <p class="mb-1">{{ review.comment }}</p>
+              <small class="text-muted">Reviewed on {{ review.created_at|date:"M d, Y" }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">No reviews yet. Be the first to review this item!</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'view_items' %}" class="btn btn-link">← Back to Items</a>
+  </div>
 </div>
 {% endblock %}

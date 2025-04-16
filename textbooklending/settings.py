@@ -36,7 +36,11 @@ ALLOWED_HOSTS = ['b-28-textbooklending-ec8819034608.herokuapp.com', 'localhost',
 
 # Application definition
 
-SITE_ID = 6 if DEBUG else 4
+# SITE_ID = 1
+#DEBUG = os.getenv("DEBUG", "False") == "True"
+SITE_ID = int(os.getenv("SITE_ID", 6 if DEBUG else 4))
+# SITE_ID = int(os.getenv("SITE_ID", 4))
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,6 +72,10 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 load_dotenv()
+# import os
+# os.environ['GOOGLE_CLIENT_ID'] = 'placeholder'
+# os.environ['GOOGLE_CLIENT_SECRET'] = 'placeholder'
+# os.environ['DEBUG'] = 'True'
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -155,6 +163,22 @@ else:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+
+
+# DATABASE_URL = os.getenv("DATABASE_URL")
+
+# if DATABASE_URL:
+#     DATABASES = {
+#         'default': dj_database_url.config(conn_max_age=600)
+#     }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         }
+#     }
+
 
 
 # Password validation
