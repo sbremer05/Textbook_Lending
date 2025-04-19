@@ -52,6 +52,7 @@ def submit_review(request, pk):
         "review": review,
         "has_borrowed": has_borrowed
     })
+
 def add_item(request):
     if not request.user.is_authenticated:
         return render(request, "catalog/add_item.html", {
@@ -75,6 +76,7 @@ def add_item(request):
 
 def view_items(request):
     user = request.user
+    query = request.GET.get('q', '')
     if user.is_authenticated and hasattr(user, "profile") and user.profile.role == "librarian":
         items = Item.objects.all()
     else:
@@ -83,7 +85,12 @@ def view_items(request):
             collections__in=public_collections
         ) | Item.objects.filter(collections=None)
 
-    return render(request, "catalog/view_items.html", {"items": items.distinct()})
+    items = search_items(items, query)
+
+    return render(request, "catalog/view_items.html", {
+        "items": items.distinct(),
+        'query': query
+    })
 
 def item_detail(request, pk):
     item = get_object_or_404(Item, pk=pk)
@@ -269,19 +276,18 @@ def request_collection_access(request, pk):
 
 def view_collections(request):
     user = request.user
+    query = request.GET.get('q', '')
     if user.is_authenticated and hasattr(user, "profile"):
         collections = Collection.objects.all()
-        # profile = user.profile
-        # if profile.role == "librarian":
-        #     collections = Collection.objects.all()
-        # elif profile.role == "patron":
-        #     collections = Collection.objects.filter(is_public=True) | Collection.objects.filter(allowed_users=user)
-        # else:
-        #     collections = Collection.objects.filter(is_public=True)
     else:
         collections = Collection.objects.filter(is_public=True)
 
-    return render(request, "catalog/view_collections.html", {"collections": collections.distinct()})
+    collections = search_collections(collections, query)
+
+    return render(request, "catalog/view_collections.html", {
+        "collections": collections.distinct(),
+        "query": query
+    })
 
 def update_item_collections(request, pk):
     if not request.user.is_authenticated or request.user.profile.role != 'librarian':
@@ -352,22 +358,21 @@ def delete_collection(request, pk):
 # Search Views
 # =====================
 
-def search_home(request):
-    return render(request, "catalog/search.html")
+def search_items(items, query):
+    if query:
+        items = items.filter(
+            Q(title__icontains = query) |
+            Q(description__icontains = query)
+        )
+    return items
 
-def search_items(request):
-    query = request.GET.get("q", "")
-    results = Item.objects.filter(
-        Q(title__icontains=query) | Q(description__icontains=query)
-    )
-    return render(request, "catalog/search_results.html", {"results": results, "query": query})
-
-def search_collections(request):
-    query = request.GET.get("q", "")
-    results = Collection.objects.filter(
-        Q(title__icontains=query) | Q(description__icontains=query)
-    )
-    return render(request, "catalog/collection_results.html", {"results": results, "query": query})
+def search_collections(collections, query):
+    if query:
+        collections = collections.filter(
+            Q(title__icontains = query) |
+            Q(description__icontains = query)
+        )
+    return collections
 
 # =====================
 # Borrowing Views

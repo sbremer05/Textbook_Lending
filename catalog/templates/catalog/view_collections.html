@@ -3,48 +3,109 @@
 {% block title %}📂 View Collections{% endblock %}
 
 {% block content %}
-<div class="container my-5" style="max-width: 800px;">
-  <h1 class="text-center text-primary mb-4">📂 View Collections</h1>
+    <div class="container my-5" style="max-width: 800px;">
+        <h1 class="text-center text-primary mb-4">📂 View Collections</h1>
 
-  {% if user.is_authenticated %}
-  <div class="text-center mb-4">
-    <a href="{% url 'add_collection' %}" class="btn btn-success btn-lg">
-      ➕ Add New Collection
-    </a>
-  </div>
-  {% endif %}
-
-  <div class="list-group">
-    {% for collection in collections %}
-      <a href="{% url 'collection_detail' collection.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="mb-1">{{ collection.title }}</h5>
-          <small class="text-muted">
-            {% if collection.is_public %}
-              (Public)
-            {% else %}
-              (Private)
-            {% endif %}
-          </small>
+        <div class="mb-4">
+            <form method="get" action="{% url 'view_collections' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Search collections..." aria-label="Search collections">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </div>
+            </form>
         </div>
-        {% if not collection.is_public and user.is_authenticated and user.profile.role != 'librarian' and user != collection.created_by and user not in collection.allowed_users.all %}
-          <form method="post" action="{% url 'request_collection_access' collection.id %}" class="mb-0">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-warning btn-sm">Request Access</button>
-          </form>
-        {% endif %}
-      </a>
-    {% empty %}
-      <p class="text-center text-muted my-4">No collections available.</p>
-    {% endfor %}
-  </div>
 
-  <div class="text-center mt-4">
-    {% if user.is_authenticated and user.profile.role == "librarian" %}
-      <a href="{% url 'librarian_dashboard' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-    {% else %}
-      <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-    {% endif %}
-  </div>
-</div>
+        {% if user.is_authenticated %}
+            <div class="text-center mb-4">
+                <a href="{% url 'add_collection' %}" class="btn btn-success btn-lg">
+                    ➕ Add New Collection
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="list-group">
+            {% for collection in collections %}
+                <a href="{% url 'collection_detail' collection.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">{{ collection.title }}</h5>
+                        <small class="text-muted">
+                            {% if collection.is_public %}
+                                (Public)
+                            {% else %}
+                                (Private)
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% if not collection.is_public and user.is_authenticated and user.profile.role != 'librarian' and user != collection.created_by and user not in collection.allowed_users.all %}
+                        <form method="post" action="{% url 'request_collection_access' collection.id %}" class="mb-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning btn-sm">Request Access</button>
+                        </form>
+                    {% endif %}
+                </a>
+            {% empty %}
+                <p class="text-center text-muted my-4">No collections found.</p>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+            {% if user.is_authenticated and user.profile.role == "librarian" %}
+                <a href="{% url 'librarian_dashboard' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
+
+
+{#{% extends "base.html" %}#}
+{##}
+{#{% block title %}📂 View Collections{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#<div class="container my-5" style="max-width: 800px;">#}
+{#  <h1 class="text-center text-primary mb-4">📂 View Collections</h1>#}
+{##}
+{#  {% if user.is_authenticated %}#}
+{#  <div class="text-center mb-4">#}
+{#    <a href="{% url 'add_collection' %}" class="btn btn-success btn-lg">#}
+{#      ➕ Add New Collection#}
+{#    </a>#}
+{#  </div>#}
+{#  {% endif %}#}
+{##}
+{#  <div class="list-group">#}
+{#    {% for collection in collections %}#}
+{#      <a href="{% url 'collection_detail' collection.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">#}
+{#        <div>#}
+{#          <h5 class="mb-1">{{ collection.title }}</h5>#}
+{#          <small class="text-muted">#}
+{#            {% if collection.is_public %}#}
+{#              (Public)#}
+{#            {% else %}#}
+{#              (Private)#}
+{#            {% endif %}#}
+{#          </small>#}
+{#        </div>#}
+{#        {% if not collection.is_public and user.is_authenticated and user.profile.role != 'librarian' and user != collection.created_by and user not in collection.allowed_users.all %}#}
+{#          <form method="post" action="{% url 'request_collection_access' collection.id %}" class="mb-0">#}
+{#            {% csrf_token %}#}
+{#            <button type="submit" class="btn btn-warning btn-sm">Request Access</button>#}
+{#          </form>#}
+{#        {% endif %}#}
+{#      </a>#}
+{#    {% empty %}#}
+{#      <p class="text-center text-muted my-4">No collections available.</p>#}
+{#    {% endfor %}#}
+{#  </div>#}
+{##}
+{#  <div class="text-center mt-4">#}
+{#    {% if user.is_authenticated and user.profile.role == "librarian" %}#}
+{#      <a href="{% url 'librarian_dashboard' %}" class="btn btn-outline-primary">← Back to Dashboard</a>#}
+{#    {% else %}#}
+{#      <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>#}
+{#    {% endif %}#}
+{#  </div>#}
+{#</div>#}
+{#{% endblock %}#}
