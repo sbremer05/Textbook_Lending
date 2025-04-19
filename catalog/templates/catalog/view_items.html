@@ -1,8 +1,9 @@
+{#{%  extends 'base.html' %}#}
 {% extends "search_base.html" %}
 
 {% block title %}📚 View Items{% endblock %}
 
-{% block content %}
+{% block search_results %}
     <h1 class="text-center text-primary mb-4">📚 View Items</h1>
 
     {% if user.profile.role == "librarian" %}
