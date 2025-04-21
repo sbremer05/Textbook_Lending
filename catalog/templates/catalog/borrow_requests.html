@@ -2,48 +2,55 @@
 {% block title %}Borrow Requests{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  <h2 style="color: #2c3e50;">📥 Borrow Requests</h2>
+<div class="container my-5" style="max-width: 800px;">
+  <h2 class="text-center text-primary mb-4">📥 Borrow Requests</h2>
 
   {% if requests %}
-    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-      <tr style="background-color: #3498db; color: white;">
-        <th style="padding: 10px;">Item</th>
-        <th style="padding: 10px;">Patron</th>
-        <th style="padding: 10px;">Requested At</th>
-        <th style="padding: 10px;">Status</th>
-        <th style="padding: 10px;">Due Date</th>
-        <th style="padding: 10px;">Actions</th>
-      </tr>
-      {% for req in requests %}
-        <tr style="background-color: {% cycle '#f9f9f9' 'white' %};">
-          <td style="padding: 10px;">{{ req.item.title }}</td>
-          <td style="padding: 10px;">{{ req.patron.get_full_name|default:req.patron.username }}</td>
-          <td style="padding: 10px;">{{ req.requested_at|date:"M d, Y H:i" }}</td>
-          <td style="padding: 10px;">{{ req.get_status_display }}</td>
-          <td style="padding: 10px;">
-            {% if req.due_date %}
-              {{ req.due_date|date:"M d, Y" }}
-            {% else %}
-              —
-            {% endif %}
-          </td>
-          <td style="padding: 10px;">
-            {% if req.status == "pending" %}
-              <a href="{% url 'approve_borrow_request' req.id %}" style="color: green; font-weight: bold;">✅ Approve</a>
-              &nbsp;
-              <a href="{% url 'deny_borrow_request' req.id %}" style="color: red; font-weight: bold;">❌ Deny</a>
-            {% else %}
-              <span style="color: #7f8c8d;">No actions</span>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>Item</th>
+            <th>Patron</th>
+            <th>Requested At</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for req in requests %}
+            <tr>
+              <td>{{ req.item.title }}</td>
+              <td>{{ req.patron.get_full_name|default:req.patron.username }}</td>
+              <td>{{ req.requested_at|date:"M d, Y H:i" }}</td>
+              <td>{{ req.get_status_display }}</td>
+              <td>
+                {% if req.due_date %}
+                  {{ req.due_date|date:"M d, Y" }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>
+                {% if req.status == "pending" %}
+                  <a href="{% url 'approve_borrow_request' req.id %}" class="btn btn-sm btn-success">✅ Approve</a>
+                  <a href="{% url 'deny_borrow_request' req.id %}" class="btn btn-sm btn-danger ml-2">❌ Deny</a>
+                {% else %}
+                  <span class="text-muted">No actions</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
-    <p style="color: #7f8c8d;">There are no borrow requests at this time.</p>
+    <p class="text-center text-muted">There are no borrow requests at this time.</p>
   {% endif %}
 
-  <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Dashboard</a>
+  <div class="text-center mt-4">
+    <a href="{% url 'librarian_dashboard' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
+  </div>
 </div>
 {% endblock %}

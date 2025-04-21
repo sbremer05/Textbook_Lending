@@ -20,6 +20,7 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -71,7 +72,6 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-load_dotenv()
 # import os
 # os.environ['GOOGLE_CLIENT_ID'] = 'placeholder'
 # os.environ['GOOGLE_CLIENT_SECRET'] = 'placeholder'
