@@ -304,7 +304,7 @@ def update_item_collections(request, pk):
 
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
-    if not collection.is_public and request.user.profile.role != 'librarian':
+    if not collection.is_public and (request.user.profile.role != 'librarian' or not collection.allowed_users.filter(pk=request.user.pk).exists()):
         return redirect('view_collections')
     
     query = request.GET.get("query", "")
