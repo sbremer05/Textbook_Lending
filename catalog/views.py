@@ -7,6 +7,7 @@ from .models import Item, Collection, BorrowRequest, Review, CollectionAccessReq
 from .forms import ItemForm, CollectionForm, UpdateItemCollectionForm
 from datetime import timedelta
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 # =====================
 # Item Views
 # =====================
@@ -195,6 +196,7 @@ def deny_collection_access(request, request_id):
         messages.info(request, f"❌ Access request for '{access_request.collection.title}' denied.")
     return redirect('view_collection_access_requests', pk=access_request.collection.pk)
 
+
 def add_collection(request):
     if not request.user.is_authenticated:
         return render(request, "catalog/add_collection.html", {
@@ -202,6 +204,7 @@ def add_collection(request):
             "error_message": "You must be logged in to add a collection."
         })
 
+    User = get_user_model()
     if request.user.profile.role in ['patron', 'pending']:
         if request.method == 'POST':
             form = CollectionForm(request.POST)
@@ -211,11 +214,15 @@ def add_collection(request):
                 collection.is_public = True
                 collection.save()
                 form.save_m2m()
+                librarians = User.objects.filter(profile__role='librarian')
+                collection.allowed_users.add(*librarians)
+
                 return redirect('view_collections')
         else:
             form = CollectionForm()
             form.fields['is_public'].initial = True
             form.fields['is_public'].disabled = True
+
     elif request.user.profile.role == 'librarian':
         if request.method == 'POST':
             form = CollectionForm(request.POST)
@@ -224,13 +231,19 @@ def add_collection(request):
                 collection.created_by = request.user
                 collection.save()
                 form.save_m2m()
+
+                librarians = User.objects.filter(profile__role='librarian')
+                collection.allowed_users.add(*librarians)
+
                 return redirect('view_collections')
         else:
             form = CollectionForm()
+
     else:
         return redirect('search_home')
 
     return render(request, "catalog/add_collection.html", {"form": form})
+
 
 def request_collection_access(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
@@ -304,7 +317,8 @@ def update_item_collections(request, pk):
 
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
-    if not collection.is_public and request.user.profile != 'librarian' and request.user not in collection.allowed_users.all():
+    if not collection.is_public and request.user.profile.role != 'librarian' and request.user not in collection.allowed_users.all():
+        messages.error(request, "❌ You do not have permission to view this collection.")
         return redirect('view_collections')
     
     query = request.GET.get("query", "")
