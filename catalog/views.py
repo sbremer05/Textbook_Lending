@@ -157,7 +157,7 @@ def delete_item(request, pk):
         messages.success(request, "🗑️ Item deleted successfully!")
         return redirect("view_items")
 
-    return render(request, "catalog/delete_item.html", {"item": item, "type": "Item"})
+    return render(request, "catalog/confirm_delete.html", {"object": item, "type": "Item"})
 
 # =====================
 # Collection Views
@@ -304,8 +304,7 @@ def update_item_collections(request, pk):
 
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
-    if not collection.is_public and (request.user.profile.role != 'librarian' or request.user not in collection.allowed_users.all()):
-        messages.error(request, "❌ You do not have permission to view this collection.")
+    if not collection.is_public and request.user.profile != 'librarian' and request.user not in collection.allowed_users.all():
         return redirect('view_collections')
     
     query = request.GET.get("query", "")
