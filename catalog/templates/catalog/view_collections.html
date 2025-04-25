@@ -41,7 +41,7 @@
 
         <div class="text-center mt-4">
             {% if user.is_authenticated and user.profile.role == "librarian" %}
-                <a href="{% url 'librarian_dashboard' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
+                <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
             {% else %}
                 <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
             {% endif %}

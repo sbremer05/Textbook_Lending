@@ -16,12 +16,12 @@
         </form>
 
         {% if user.profile.role == "librarian" %}
-            <a href="{% url 'librarian_dashboard' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold;">
-                ← Back to Dashboard
+            <a href="{% url 'profile' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold;">
+                ← Back to Profile
             </a>
         {% else %}
-            <a href="{% url 'home' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold;">
-                ← Back to Dashboard
+            <a href="{% url 'profile' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold;">
+                ← Back to Profile
             </a>
         {% endif %}
     {% else %}
