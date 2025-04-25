@@ -12,10 +12,6 @@ urlpatterns = [
     path('items/<int:pk>/', views.item_detail, name='item_detail'),
     path('items/<int:pk>/update_collection/', views.update_item_collections, name='update_item_collections'),
 
-    path("search/", views.search_home, name="search_home"),
-    path("search-items/", views.search_items, name="search_items"),
-    path("search-collections/", views.search_collections, name="search_collections"),
-
     path("items/<int:pk>/edit/", views.edit_item, name="edit_item"),
     path("items/<int:pk>/delete/", views.delete_item, name="delete_item"),
     path("collections/<int:pk>/edit/", views.edit_collection, name="edit_collection"),

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Search bar section -->
+    <form method="get" action="{% block search_action_url %}{% endblock %}" class="d-flex mb-4">
+        <input class="form-control me-2" type="search" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+
+    {% block search_results %}
+        <!-- Results will be displayed here in child templates -->
+    {% endblock %}
+{% endblock %}
