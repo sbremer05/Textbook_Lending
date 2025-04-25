@@ -4,41 +4,51 @@
 
 {% block content %}
 <div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  <h1 style="color: #2c3e50;">{{ collection.title }}
-    <span style="font-size: 0.8em; color: #7f8c8d; font-style: italic;">
-      by {{ collection.created_by }}
-    </span>
+
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1 style="color: #2c3e50; margin: 0;">
+      {{ collection.title }}
+      <span style="font-size: 0.8em; color: #7f8c8d; font-style: italic;">by {{ collection.created_by }}</span>
     </h1>
-  <p style="color: #7f8c8d; margin-bottom: 20px;">{{ collection.description }}</p>
+    {% if user == collection.created_by %}
+      <div>
+        <a href="{% url 'edit_collection' collection.id %}" style="margin-right: 10px; text-decoration: none; color: #f39c12;">✏️ Edit</a>
+        <a href="{% url 'delete_collection' collection.id %}" style="text-decoration: none; color: #e74c3c;">🗑️ Delete</a>
+      </div>
+    {% endif %}
+  </div>
 
-  {% if user == collection.created_by %}
-    <a href="{% url 'edit_collection' collection.id %}">✏️ Edit</a>
-    <a href="{% url 'delete_collection' collection.id %}">🗑️ Delete</a>
+  <p style="color: #7f8c8d; margin-top: 10px;">{{ collection.description }}</p>
+
+  {% if user.is_authenticated and user.profile.role == 'librarian' and not collection.is_public %}
+    <a href="{% url 'view_collection_access_requests' collection.id %}" style="display: inline-block; margin-bottom: 15px; color: #3498db; text-decoration: none; font-weight: bold;">📥 View Access Requests</a>
   {% endif %}
 
-  {% if user.is_authenticated and user.profile.role == 'librarian' and collection.is_public == False%}
-    <a href="{% url 'view_collection_access_requests' collection.id %}" style="margin-left: 20px; color: #3498db; text-decoration: none; font-weight: bold;">📥 View Access Requests</a>
-  {% endif %}
-
-  <form method = "get" action="">
+  <form method="get" action="" style="margin-bottom: 25px;">
     <label for="query" style="font-weight: bold; color: #2c3e50;">Search in this Collection:</label>
     <input type="text" id="query" name="query" placeholder="Enter keywords..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #bdc3c7; border-radius: 5px;">
-    <button type="submit" style="margin-top: 10px; padding: 10px 15px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
-      Search
+    <button type="submit" style="margin-top: 10px; padding: 10px 15px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+      🔍 Search
     </button>
   </form>
-  <h2 style="color: #2c3e50;">Items in this Collection</h2>
-  <ul style="list-style: none; padding: 0;">
-    {% for item in items %}
-      <li style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #ecf0f1;">
-        <a href="{% url 'item_detail' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold; transition: color 0.3s ease;">
-          {{ item.title }}</a> — {{ item.status }}
-      </li>
-    {% empty %}
-      <li>No items in this collection.</li>
-    {% endfor %}
-  </ul>
 
-  <a href="{% url 'view_collections' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Collections</a>
+  <h2 style="color: #2c3e50; margin-bottom: 15px;">Items in this Collection</h2>
+
+  {% if items %}
+    <ul style="padding: 0;">
+      {% for item in items %}
+        <li style="list-style: none; background-color: #f9f9f9; padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+          <a href="{% url 'item_detail' item.id %}" style="font-size: 1.1em; font-weight: 600; color: #2c3e50; text-decoration: none;">
+            📘 {{ item.title }}
+          </a>
+          <span style="float: right; color: #7f8c8d; font-style: italic;">{{ item.status|title }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="color: #7f8c8d;">No items in this collection.</p>
+  {% endif %}
+
+  <a href="{% url 'view_collections' %}" class="back-link" style="display: inline-block; margin-top: 25px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Collections</a>
 </div>
 {% endblock %}
