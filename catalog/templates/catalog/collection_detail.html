@@ -32,6 +32,24 @@
     </button>
   </form>
 
+  {% if user == collection.created_by and user.profile.role in "patron librarian" %}
+    <form method="post" action="" style="margin-bottom: 25px;">
+      {% csrf_token %}
+      <label for="item" style="font-weight: bold; color: #2c3e50;">Add an Existing Book:</label>
+      <select name="item_ids" id="item" multiple style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #bdc3c7; border-radius: 5px;">
+        {% for item in available_items %}
+          <option value="{{ item.id }}">{{ item.title }}</option>
+        {% empty %}
+          <option disabled>No available items to add.</option>
+        {% endfor %}
+      </select>
+      <button type="submit" style="margin-top: 10px; padding: 10px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        ➕ Add to Collection
+      </button>
+    </form>
+  {% endif %}
+
+
   <h2 style="color: #2c3e50; margin-bottom: 15px;">Items in this Collection</h2>
 
   {% if items %}

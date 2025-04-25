@@ -49,7 +49,7 @@ def post_login_redirect(request):
 
         print(f"Redirecting {user.username} to their dashboard ({profile.role})")
         # return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
-        return redirect("librarian_dashboard" if profile.role == "librarian" else "home")
+        return redirect("home" if profile.role == "librarian" else "home")
     else:
         return redirect("/")
 
@@ -66,7 +66,7 @@ def profile_picture_upload(request):
         form = ProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            return redirect('home' if request.user.profile.role != 'librarian' else 'librarian_dashboard')
+            return redirect('home' if request.user.profile.role != 'librarian' else 'home')
 
     form = ProfilePictureForm(instance=request.user.profile)
     return render(request, "login/upload_profile_picture.html", {"form": form})
@@ -77,7 +77,7 @@ def dashboard(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
 
     if profile.role == 'librarian':
-        return redirect('librarian_dashboard')
+        return redirect('home')
     return redirect('home')
 
 # Patron Dashboard
@@ -90,7 +90,7 @@ def dashboard(request):
 @role_required('librarian')
 @login_required
 def librarian_dashboard(request):
-    return render(request, "login/dashboard_librarian.html", {"user": request.user})
+    return render(request, "login/home.html", {"user": request.user})
 
 # Librarian Requests Page - handles Pending Requests
 @role_required('librarian')
