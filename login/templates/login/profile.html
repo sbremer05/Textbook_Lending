@@ -3,6 +3,7 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
 <div class="container my-5" style="max-width: 800px;">
   <div class="card shadow-sm">
     <div class="card-body">
@@ -28,4 +29,8 @@
     <a href="{% url 'home' %}" class="btn btn-primary">Back to Dashboard</a>
   </div>
 </div>
+{% else %}
+  <p>{{ error_message }}</p>
+  <p><a href = "{% url 'home' %}">Go back to home</a></p>
+{% endif %}
 {% endblock %}

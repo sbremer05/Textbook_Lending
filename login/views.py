@@ -32,7 +32,7 @@ def logout_view(request):
     return redirect("/")
 
 # Post-login redirection: Checks if user needs to select a role
-@login_required
+# @login_required
 def post_login_redirect(request):
     user = request.user
     social_account = SocialAccount.objects.filter(user=user, provider='google').first()
@@ -93,10 +93,16 @@ def librarian_dashboard(request):
     return render(request, "login/home.html", {"user": request.user})
 
 # Librarian Requests Page - handles Pending Requests
-@role_required('librarian')
-@login_required
+# @role_required('librarian')
+# @login_required
 def librarian_requests(request):
+    if not request.user.is_authenticated:
+        return render(request, "login/librarian_requests.html", {
+            "form": None,
+            "error_message": "You must be logged in to view librarian requests."
+        })
     if request.user.profile.role != "librarian":
+        messages.error(request, "You do not have permission to access this page.")
         return redirect("home")  # Only librarians can access
 
     # Fetch pending requests along with user details
@@ -115,7 +121,7 @@ def librarian_requests(request):
 
 # Request Librarian
 @role_required('patron', 'pending')
-@login_required
+# @login_required
 def request_librarian(request):
     profile = request.user.profile
     if profile.role == "patron" or profile.role == "pending":
@@ -124,8 +130,13 @@ def request_librarian(request):
         messages.success(request, "Your request for librarian status has been submitted!")
     return redirect("home")
 
-@login_required
+# @login_required
 def profile_view(request):
+    if not request.user.is_authenticated:
+        return render(request, "login/profile.html", {
+            "form": None,
+            "error_message": "You must be logged in to view your profile."
+        })
     user = request.user
     profile = user.profile
     # Use first_name and last_name if available; otherwise, fallback to username.

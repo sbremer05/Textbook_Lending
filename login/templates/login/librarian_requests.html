@@ -3,6 +3,7 @@
 {% block title %}Librarian Requests{% endblock %}
 
 {% block content %}
+{% if user.is_authenticated %}
 <div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center;">
     <h2 style="margin-top: 0; color: #2c3e50;">Pending Librarian Requests</h2>
 
@@ -38,4 +39,8 @@
 
     <a href="{% url 'home' %}" class="button-return" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #3498db; color: white; border-radius: 5px; text-decoration: none;">⬅ Return to Dashboard</a>
 </div>
+{% else %}
+    <p>{{ error_message }}</p>
+    <p><a href = "{% url 'home' %}">Go back to home</a></p>
+{% endif %}
 {% endblock %}
