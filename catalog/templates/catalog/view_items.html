@@ -20,7 +20,7 @@
                 <a href="{% url 'item_detail' item.pk %}" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between align-items-center">
                         <h5 class="mb-1">{{ item.title }}</h5>
-                        <small class="text-muted">Status: {{ item.status }}</small>
+                        <small class="text-muted">Status: {{ item.get_status_display }}</small>
                     </div>
                     <p class="mb-1">Location: {{ item.location }}</p>
                     {% if item.image %}
