@@ -45,13 +45,15 @@
             </button>
         </form>
     {% elif not user.is_authenticated %}
-        <p>You must be <a href="{% url 'login' %}">logged in</a> to leave a review.</p>
+      <p>{{ error_message }}</p>
+      <p><a href = "{% url 'home' %}">Go back to home</a></p>
     {% else %}
         <p>You can only review books you're currently borrowing.</p>
     {% endif %}
-
-    <a href="{% url 'my_borrowed_items' %}" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none;">
-        ← Back to My Borrowed Items
-    </a>
+    {% if user.is_authenticated %}
+        <p style="margin-top: 20px;">
+            <a href="{% url 'my_borrowed_items' %}" style="color: #3498db; text-decoration: none;">← Back to My Borrowed Items</a>
+        </p>
+    {% endif %}
 </div>
 {% endblock %}

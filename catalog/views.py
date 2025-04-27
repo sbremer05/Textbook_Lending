@@ -13,8 +13,13 @@ from catalog.models import Item
 # Item Views
 # =====================
 
-@login_required
+# @login_required
 def submit_review(request, pk):
+    if not request.user.is_authenticated:
+        return render(request, "catalog/submit_review.html", {
+            "form": None,
+            "error_message": "You must be logged in to submit a review."
+        })
     item = get_object_or_404(Item, pk=pk)
 
     has_borrowed = BorrowRequest.objects.filter(
@@ -322,7 +327,7 @@ def update_item_collections(request, pk):
         form = UpdateItemCollectionForm(instance=item)
     return render(request, 'catalog/update_item_collections.html', {'form': form, 'item': item})
 
-@login_required
+# @login_required
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
 
@@ -428,7 +433,7 @@ def search_collections(collections, query):
 # =====================
 # Borrowing Views
 # =====================
-@login_required
+# @login_required
 def request_borrow(request, pk):
     item = get_object_or_404(Item, pk=pk)
     if BorrowRequest.objects.filter(item=item, patron=request.user, status='pending').exists():
@@ -440,14 +445,19 @@ def request_borrow(request, pk):
         messages.success(request, "Borrow request submitted successfully.")
     return redirect("item_detail", pk=pk)
 
-@login_required
+# @login_required
 def view_borrow_requests(request):
+    if not request.user.is_authenticated:
+        return render(request, "catalog/borrow_requests.html", {
+            "requests": None,
+            "error_message": "You must be logged in to view borrow requests."
+        })
     if request.user.profile.role != 'librarian':
         return redirect('home')
     requests = BorrowRequest.objects.select_related('item', 'patron').order_by('-requested_at')
     return render(request, 'catalog/borrow_requests.html', {'requests': requests})
 
-@login_required
+# @login_required
 def approve_borrow_request(request, request_id):
     borrow_request = get_object_or_404(BorrowRequest, pk=request_id)
     if request.user.profile.role != 'librarian':
@@ -474,7 +484,7 @@ def approve_borrow_request(request, request_id):
     )
     return redirect('view_borrow_requests')
 
-@login_required
+# @login_required
 def deny_borrow_request(request, request_id):
     borrow_request = get_object_or_404(BorrowRequest, pk=request_id)
     if request.user.profile.role != 'librarian':
@@ -485,7 +495,7 @@ def deny_borrow_request(request, request_id):
     messages.info(request, f"❌ Borrow request for '{borrow_request.item.title}' denied.")
     return redirect('view_borrow_requests')
 
-@login_required
+# @login_required
 def return_borrowed_item(request, request_id):
     borrow_request = get_object_or_404(BorrowRequest, pk=request_id, patron=request.user)
     borrow_request.status = 'returned'
@@ -493,8 +503,13 @@ def return_borrowed_item(request, request_id):
     messages.success(request, f"📦 You have returned '{borrow_request.item.title}'.")
     return redirect('my_borrowed_items')
 
-@login_required
+# @login_required
 def my_borrowed_items(request):
+    if not request.user.is_authenticated:
+        return render(request, "catalog/my_borrowed_items.html", {
+            "borrowed_items": None,
+            "error_message": "You must be logged in to view your borrowed items."
+        })
     borrowed = BorrowRequest.objects.filter(
         patron=request.user,
         status='approved'

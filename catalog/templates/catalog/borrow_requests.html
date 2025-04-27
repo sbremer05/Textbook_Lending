@@ -4,7 +4,8 @@
 {% block content %}
 <div class="container my-5" style="max-width: 800px;">
   <h2 class="text-center text-primary mb-4">📥 Borrow Requests</h2>
-
+  {% if user.is_authenticated %}
+    <p class="text-center">Welcome, {{ user.get_full_name|default:user.username
   {% if requests %}
     <div class="table-responsive">
       <table class="table table-striped">
@@ -48,9 +49,13 @@
   {% else %}
     <p class="text-center text-muted">There are no borrow requests at this time.</p>
   {% endif %}
-
   <div class="text-center mt-4">
     <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
   </div>
 </div>
+    </p>
+  {% else %}
+  <p>{{ error_message }}</p>
+  <p><a href = "{% url 'home' %}">Go back to home</a></p>
+  {% endif %}
 {% endblock %}
