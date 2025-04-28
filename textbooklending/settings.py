@@ -234,7 +234,8 @@ AUTHENTICATION_BACKENDS = (
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ACCOUNT_ADAPTER = "login.adapters.MyAccountAdapter"
-SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "login.adapters.MySocialAccountAdapter"
+
 
 
 LOGIN_REDIRECT_URL = "/redirect-after-login"
