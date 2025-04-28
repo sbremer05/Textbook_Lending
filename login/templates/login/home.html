@@ -36,6 +36,12 @@
         <a href="{% url 'my_borrowed_items' %}" class="list-group-item list-group-item-action">📖 View Borrowed Books</a>
         <a href="{% url 'view_borrow_requests' %}" class="list-group-item list-group-item-action">📥 Manage Borrow Requests</a>
         <a href="{% url 'view_collections' %}" class="list-group-item list-group-item-action">📂 Manage Collections</a>
+        <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">
+          🔔 Notifications
+          {% if unread_notifications_count > 0 %}
+              <span class="badge bg-danger">{{ unread_notifications_count }}</span>
+          {% endif %}
+      </a>
         <a href="{% url 'librarian_requests' %}" class="list-group-item list-group-item-action">🔼 Upgrade Patrons to Librarians</a>
       </div>
       <div class="text-center">
@@ -55,7 +61,12 @@
       <div class="list-group mb-4">
         <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Available Books</a>
         <a href="{% url 'my_borrowed_items' %}" class="list-group-item list-group-item-action">📖 View Borrowed Books</a>
-        <a href="#" class="list-group-item list-group-item-action disabled">🔔 Notifications (Coming Soon)</a>
+        <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">
+          🔔 Notifications
+          {% if unread_notifications_count > 0 %}
+              <span class="badge bg-danger">{{ unread_notifications_count }}</span>
+          {% endif %}
+      </a>
         <a href="{% url 'view_collections' %}" class="list-group-item list-group-item-action">📂 Manage Collections</a>
       </div>
       <div class="text-center mb-4">

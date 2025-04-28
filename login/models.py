@@ -16,6 +16,16 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role if self.role else 'No Role Selected'}"
 
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    url = models.CharField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message[:30]}"
+    
 # Signal to automatically create Profile when a new User is created
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):

@@ -4,10 +4,11 @@ from django.contrib.messages import get_messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from allauth.socialaccount.models import SocialAccount
-from .models import Profile
+from .models import Profile, Notification
 from .forms import ProfilePictureForm
 from .decorators import role_required
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 # Home view (Debugging included)
 def home(request):
@@ -17,7 +18,8 @@ def home(request):
             profile.role = "patron"  # Default role
             profile.is_setup = True
             profile.save()
-        context = {"user": request.user, "role": profile.role, "is_authenticated": True}
+        unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
+        context = {"user": request.user, "role": profile.role, "is_authenticated": True, "unread_notifications_count": unread_notifications_count}
     else:
         context = {"is_authenticated": False}
     return render(request, "login/home.html", context)
@@ -127,6 +129,12 @@ def request_librarian(request):
     if profile.role == "patron" or profile.role == "pending":
         profile.role = "pending"
         profile.save()
+        for librarian in User.objects.filter(profile__role='librarian'):
+            Notification.objects.create(
+                user=librarian,
+                message=f"{request.user.username} has requested librarian access.",
+                url= reverse('librarian_requests')
+            )
         messages.success(request, "Your request for librarian status has been submitted!")
     return redirect("home")
 
@@ -150,3 +158,16 @@ def profile_view(request):
         'role': profile.role,
     }
     return render(request, "login/profile.html", context)
+
+
+def view_notifications(request):
+    if not request.user.is_authenticated:
+        return render(request, "login/view_notifications.html", {
+            "form": None,
+            "error_message": "You must be logged in to view your notifications."
+        })
+    notifications = request.user.notifications.order_by('-created_at')
+
+    notifications.update(is_read=True)
+
+    return render(request, "login/view_notifications.html", {'notifications': notifications})

@@ -3,12 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseForbidden
+from django.urls import reverse
 from .models import Item, Collection, BorrowRequest, Review, CollectionAccessRequest
+from login.models import Notification
 from .forms import ItemForm, CollectionForm, UpdateItemCollectionForm
 from datetime import timedelta
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from catalog.models import Item
+from django.contrib.auth.models import User
 # =====================
 # Item Views
 # =====================
@@ -196,6 +199,11 @@ def approve_collection_access(request, request_id):
         access_request.status = 'approved'
         access_request.collection.allowed_users.add(access_request.user)
         access_request.save()
+        Notification.objects.create(
+            user=access_request.user,
+            message=f"✅ Your request to access '{access_request.collection.title}' has been approved!",
+            url= reverse('collection_detail', args=[access_request.collection.pk])
+        )
         messages.success(request, f"✅ Access request for '{access_request.collection.title}' approved.")
     return redirect('view_collection_access_requests', pk=access_request.collection.pk)
 
@@ -206,6 +214,10 @@ def deny_collection_access(request, request_id):
     if access_request.status == 'pending':
         access_request.status = 'denied'
         access_request.save()
+        Notification.objects.create(
+            user=access_request.user,
+            message=f"❌ Your request to access '{access_request.collection.title}' has been denied."
+        )
         messages.info(request, f"❌ Access request for '{access_request.collection.title}' denied.")
     return redirect('view_collection_access_requests', pk=access_request.collection.pk)
 
@@ -268,8 +280,8 @@ def request_collection_access(request, pk):
             messages.info(request, "You already have access to this collection.")
             return redirect('collection_detail', pk=pk)
 
-        elif CollectionAccessRequest.objects.filter(collection=collection, user=request.user).exists():
-            messages.info(request, "You have already requested access to this collection.")
+        elif CollectionAccessRequest.objects.filter(collection=collection, user=request.user, status='pending').exists():
+            messages.info(request, "You have already requested access to this collection and it's pending approval.")
             return redirect('collection_detail', pk=pk)
         
         existing_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user, status='pending').first()
@@ -282,6 +294,13 @@ def request_collection_access(request, pk):
                 collection=collection,
                 user=request.user
             )
+
+            Notification.objects.create(
+                user=collection.created_by,
+                message=f"{request.user.username} requested access to your collection '{collection.title}'.",
+                url=reverse('view_collection_access_requests', args=[collection.pk])  
+            )
+
             messages.success(request, "Access request submitted successfully!")
             return redirect('collection_detail', pk=pk)
     else:
@@ -443,6 +462,13 @@ def request_borrow(request, pk):
     else:
         BorrowRequest.objects.create(item=item, patron=request.user)
         messages.success(request, "Borrow request submitted successfully.")
+
+        for librarian in User.objects.filter(profile__role='librarian'):
+            Notification.objects.create(
+                user=librarian,
+                message=f"{request.user.username} requested to borrow '{item.title}'.",
+                url= reverse('view_borrow_requests')  
+            )
     return redirect("item_detail", pk=pk)
 
 # @login_required
@@ -477,7 +503,10 @@ def approve_borrow_request(request, request_id):
     if item.status != 'checked_out':  # Safety check if it's already checked out.
         item.status = 'checked_out'
         item.save()
-
+    Notification.objects.create(
+        user=borrow_request.patron,  
+        message=f"✅ Your request for '{borrow_request.item.title}' has been approved! Please collect your item. Due date: {borrow_request.due_date.strftime('%Y-%m-%d')}."
+    )
     messages.success(
         request,
         f"✅ Borrow request for '{borrow_request.item.title}' approved. Due date is set to {(borrow_request.due_date).strftime('%Y-%m-%d')}."
@@ -492,6 +521,11 @@ def deny_borrow_request(request, request_id):
 
     borrow_request.status = 'denied'
     borrow_request.save()
+
+    Notification.objects.create(
+        user=borrow_request.patron,
+        message=f"❌ Your borrow request for '{borrow_request.item.title}' has been denied."
+    )
     messages.info(request, f"❌ Borrow request for '{borrow_request.item.title}' denied.")
     return redirect('view_borrow_requests')
 
@@ -500,6 +534,9 @@ def return_borrowed_item(request, request_id):
     borrow_request = get_object_or_404(BorrowRequest, pk=request_id, patron=request.user)
     borrow_request.status = 'returned'
     borrow_request.save()
+    item = borrow_request.item
+    item.status = 'available'
+    item.save()
     messages.success(request, f"📦 You have returned '{borrow_request.item.title}'.")
     return redirect('my_borrowed_items')
 

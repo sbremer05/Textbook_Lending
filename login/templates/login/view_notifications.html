@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Notifications</h2>
+
+{% if user.is_authenticated %}
+<ul class="list-group">
+  {% for notification in notifications %}
+    <li class="list-group-item {% if not notification.is_read %}list-group-item-info{% endif %}">
+      {% if notification.url %}
+        <a href="{{ notification.url }}" class="text-primary text-decoration-underline">
+          {{ notification.message }}
+        </a>
+      {% else %}
+        {{ notification.message }}
+      {% endif %}
+      <br>
+      <small class="text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+    </li>
+  {% empty %}
+    <li class="list-group-item">No notifications yet.</li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'home' %}" class="btn btn-primary mt-3">Back to Home</a>
+{%else%}
+    <p>{{ error_message }}</p>
+    <p><a href="{% url 'home' %}">Go back to home</a></p>
+    {% endif %}
+{% endblock %}

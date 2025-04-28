@@ -5,7 +5,7 @@
 <div class="container my-5" style="max-width: 800px;">
   <h2 class="text-center text-primary mb-4">📥 Borrow Requests</h2>
   {% if user.is_authenticated %}
-    <p class="text-center">Welcome, {{ user.get_full_name|default:user.username
+    <p class="text-center">Welcome, {{ user.get_full_name|default:user.username}}!</p>
   {% if requests %}
     <div class="table-responsive">
       <table class="table table-striped">
