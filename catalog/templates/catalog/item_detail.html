@@ -50,7 +50,7 @@
         {% endif %}
       {% endif %}
 
-      {% if user == item.created_by %}
+      {% if user.profile.role == 'librarian' %}
         <div class="mt-4">
           <a href="{% url 'edit_item' item.id %}" class="btn btn-outline-primary">✏️ Edit</a>
           <a href="{% url 'delete_item' item.id %}" class="btn btn-outline-danger">🗑️ Delete</a>
