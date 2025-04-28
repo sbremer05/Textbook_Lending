@@ -2,18 +2,20 @@
 
 {% block title %}📂 View Collections{% endblock %}
 
+{% block opening %}
+    <h1 class="text-center text-primary mb-4">📂 View Collections</h1>
+
+    {% if user.is_authenticated %}
+        <div class="text-center mb-4">
+            <a href="{% url 'add_collection' %}" class="btn btn-success btn-lg">
+                ➕ Add New Collection
+            </a>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block search_results %}
     <div class="container my-5" style="max-width: 800px;">
-        <h1 class="text-center text-primary mb-4">📂 View Collections</h1>
-
-        {% if user.is_authenticated %}
-            <div class="text-center mb-4">
-                <a href="{% url 'add_collection' %}" class="btn btn-success btn-lg">
-                    ➕ Add New Collection
-                </a>
-            </div>
-        {% endif %}
-
         <div class="list-group">
             {% for collection in collections %}
                 <a href="{% url 'collection_detail' collection.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">

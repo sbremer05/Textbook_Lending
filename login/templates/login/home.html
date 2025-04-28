@@ -8,6 +8,14 @@
   {% endif %}
 {% endblock %}
 
+{% block extra_styles %}
+    <style>
+        .list-group-item.disabled {
+            opacity: 0.6;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <div class="container my-5" style="max-width: 800px;">
   {% load socialaccount %}
@@ -20,7 +28,6 @@
           {% endif %}
           <h2 class="card-title">Welcome, {{ user.username|title }}! <small class="text-muted">(Librarian)</small></h2>
           <p class="card-text">Email: {{ user.email }}</p>
-{#          <a href="{% url 'search_home' %}" class="btn btn-primary btn-lg mb-3">🔍 Go to Search Page</a>#}
         </div>
       </div>
       <h3 class="mb-3">Dashboard</h3>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    {% block opening %}{% endblock %}
     <!-- Search bar section -->
     <form method="get" action="{% block search_action_url %}{% endblock %}" class="d-flex mb-4">
         <input class="form-control me-2" type="search" name="q" placeholder="Search..." value="{{ request.GET.q }}">
