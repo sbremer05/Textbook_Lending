@@ -391,16 +391,31 @@ def collection_detail(request, pk):
 
             return redirect('collection_detail', pk=collection.id)
 
-    # Available items
-    available_items = Item.objects.exclude(id__in=collection.items.values_list('id', flat=True))
-    can_add_items = (request.user == collection.created_by and request.user.profile.role in ["patron", "librarian"])
+    candidates = Item.objects.exclude(
+        id__in=collection.items.values_list('id', flat=True)
+    )
+
+    # now filter based on public vs private
+    if collection.is_public:
+        # public collection: show items with no collections OR in any public collection
+        available_items = candidates.filter(
+            Q(collections=None) | Q(collections__is_public=True)
+        ).distinct()
+    else:
+        # private collection: only items that belong to no collections
+        available_items = candidates.filter(collections=None)
+
+    can_add_items = (
+            request.user == collection.created_by
+            and request.user.profile.role in ['patron','librarian']
+    )
 
     return render(request, "catalog/collection_detail.html", {
-        "collection": collection,
-        "items": items,
-        "available_items": available_items,
-        "query": query,
-        "can_add_items": can_add_items,
+        "collection":       collection,
+        "items":            items,            # your already‐computed list
+        "available_items":  available_items,
+        "can_add_items":    can_add_items,
+        "query":            query,
     })
 
 def edit_collection(request, pk):
