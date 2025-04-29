@@ -33,7 +33,15 @@ class CollectionForm(forms.ModelForm):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['title', 'identifier', 'status', 'location', 'description', 'collections', 'image']
+        fields = [
+            'title',
+            'author',
+            'status',
+            'location',
+            'description',
+            'collections',
+            'image'
+        ]
     
     def clean_collections(self):
         collections = self.cleaned_data.get('collections')

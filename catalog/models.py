@@ -31,13 +31,13 @@ class CollectionAccessRequest(models.Model):
 class Item(models.Model):
     STATUS_CHOICES = [
         ('available', 'Available'),
-        ('checked_out', 'Checked Out'),
+        # ('checked_out', 'Checked Out'),
         ('repair', 'Being Repaired'),
         ('lost', 'Lost'),
     ]
 
     title = models.CharField(max_length=255)
-    identifier = models.CharField(max_length=255, unique=True)
+    author = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
     location = models.CharField(max_length=255)
     description = models.TextField()
