@@ -2,31 +2,316 @@
 
 {% block title %}Add a Collection{% endblock %}
 
+{% block extra_styles %}
+    <style>
+        /* Form container */
+        .add-collection-container {
+            max-width: 700px;
+            margin: 60px auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #2c3e50;
+        }
+        .add-collection-container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+
+        /* Basic field styles */
+        .add-collection-container input[type="text"],
+        .add-collection-container textarea,
+        .add-collection-container input[type="checkbox"] {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 20px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: #f9fafe;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .add-collection-container textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .add-collection-container input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        .add-collection-container input:focus,
+        .add-collection-container textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+            background: #fff;
+        }
+
+        /* Checkbox sections */
+        .access-control-section {
+            margin: 25px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .checkbox-section-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        /* Searchable checkboxes */
+        .checkbox-list {
+            margin-bottom: 20px;
+        }
+        .checkbox-container {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            background: #f9fafe;
+        }
+        .checkbox-search-container {
+            position: sticky;
+            top: 0;
+            background: #f9fafe;
+            padding: 10px;
+            z-index: 1;
+            border-bottom: 1px solid #eee;
+        }
+        .checkbox-search {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        .checkbox-search:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+        }
+        .checkbox-options {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .checkbox-item:last-child {
+            border-bottom: none;
+        }
+        .checkbox-item:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: auto;
+            accent-color: #3498db;
+        }
+        .checkbox-count {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin: 8px 0 5px;
+            padding: 0 2px;
+        }
+        .no-results {
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            display: none;
+        }
+        .checkbox-item.hidden {
+            display: none;
+        }
+
+        /* User display styling */
+        .user-display {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .username {
+            font-weight: 500;
+        }
+        .user-email {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+        .checkbox-item label {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Submit button */
+        .add-collection-container button.create-btn {
+            align-self: flex-start;
+            padding: 12px 24px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .add-collection-container button.create-btn:hover {
+            background: #2980b9;
+        }
+        .add-collection-container button.create-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Back link */
+        .add-collection-container a.back-link {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 0.95rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .add-collection-container a.back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width: 700px; margin: 60px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  {% if user.is_authenticated %}
-    <h1 style="color: #2c3e50; margin-bottom: 20px;">Add a Collection</h1>
+    {% if user.is_authenticated %}
+        <div class="add-collection-container">
+            <h1>Add a Collection</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-    <form method="post" style="display: flex; flex-direction: column;">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" style="width: fit-content; padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease;">
-        Create Collection
-      </button>
-    </form>
+                <!-- Basic Collection Info -->
+                {{ form.title.label_tag }} {{ form.title }}
+                {{ form.description.label_tag }} {{ form.description }}
 
-    {% if user.profile.role == "librarian" %}
-      <a href="{% url 'home' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #3498db; text-decoration: none;">
-        ← Back to Dashboard
-      </a>
-      {% else %}
-      <a href="{% url 'home' %}" class="back-link" style="display: block; text-align: center; margin-top: 20px; font-weight: bold; color: #3498db; text-decoration: none;">
-        ← Back to Dashboard
-      </a>
-    {% endif %}
+                <!-- Public/Private Toggle -->
+                <div class="form-group">
+                    {{ form.is_public.label_tag }}
+                    {{ form.is_public }}
+                </div>
+
+                <!-- Conditional Access Control Sections -->
+                <div id="access-control" class="access-control-section" style="display: none;">
+                    <div class="checkbox-section-title">Grant Access to Users</div>
+                    <div class="checkbox-list">
+                        <div class="checkbox-container">
+                            <div class="checkbox-search-container">
+                                <input type="text" class="checkbox-search users-search" placeholder="Search users by name or email...">
+                                <div class="checkbox-count users-count">
+                                    Showing {{ form.allowed_users.field.queryset.count }} users
+                                </div>
+                            </div>
+                            <div class="no-results users-no-results">No matching users found</div>
+                            <div class="checkbox-options users-options">
+                                {% for checkbox in form.allowed_users %}
+                                    <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }} {{ checkbox.choice_label.user.email|lower }}">
+                                        {{ checkbox.tag }}
+                                        <label for="{{ checkbox.id_for_label }}">
+                                            <div class="user-display">
+                                                <span class="username">{{ checkbox.choice_label }}</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {{ form.allowed_users.errors }}
+                    </div>
+                </div>
+
+                <!-- Items to Include -->
+                <div class="checkbox-section-title">Add Books to Collection</div>
+                <div class="checkbox-list">
+                    <div class="checkbox-container">
+                        <div class="checkbox-search-container">
+                            <input type="text" class="checkbox-search items-search" placeholder="Search books...">
+                            <div class="checkbox-count items-count">
+                                Showing {{ form.items.field.queryset.count }} books
+                            </div>
+                        </div>
+                        <div class="no-results items-no-results">No matching books found</div>
+                        <div class="checkbox-options items-options">
+                            {% for checkbox in form.items %}
+                                <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}">
+                                    {{ checkbox.tag }}
+                                    <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {{ form.items.errors }}
+                </div>
+
+                <button type="submit" class="create-btn">Create Collection</button>
+            </form>
+
+            <a href="{% url 'home' %}" class="back-link">← Back to Dashboard</a>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Toggle user access control based on public/private selection
+                const isPublicCheckbox = document.querySelector('#id_is_public');
+                const accessControlSection = document.querySelector('#access-control');
+
+                function toggleAccessControl() {
+                    accessControlSection.style.display = isPublicCheckbox.checked ? 'none' : 'block';
+                }
+
+                // Initial state
+                toggleAccessControl();
+
+                // Add event listener
+                isPublicCheckbox.addEventListener('change', toggleAccessControl);
+
+                // Setup search functionality for both user and item checkboxes
+                function setupSearch(inputClass, optionsClass, countClass, noResultsClass) {
+                    const searchInput = document.querySelector(`.${inputClass}`);
+                    const checkboxes = document.querySelectorAll(`.${optionsClass} .checkbox-item`);
+                    const noResults = document.querySelector(`.${noResultsClass}`);
+                    const checkboxCount = document.querySelector(`.${countClass}`);
+                    const totalItems = checkboxes.length;
+
+                    function updateVisibleCount(visible) {
+                        checkboxCount.textContent = `Showing ${visible} of ${totalItems}`;
+                    }
+                    updateVisibleCount(totalItems);
+
+                    searchInput.addEventListener('input', function(e) {
+                        const searchTerm = e.target.value.toLowerCase();
+                        let visibleCount = 0;
+
+                        checkboxes.forEach(item => {
+                            const matches = item.dataset.search.includes(searchTerm);
+                            item.classList.toggle('hidden', !matches);
+                            if (matches) visibleCount++;
+                        });
+
+                        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+                        updateVisibleCount(visibleCount);
+                    });
+                }
+
+                // Initialize both search boxes
+                setupSearch('users-search', 'users-options', 'users-count', 'users-no-results');
+                setupSearch('items-search', 'items-options', 'items-count', 'items-no-results');
+            });
+        </script>
     {% else %}
-            <p>{{ error_message }}</p>
-            <p><a href = "{% url 'home' %}">Go back to home</a></p>
+        <p>{{ error_message }}</p>
+        <p><a href="{% url 'home' %}">Go back to home</a></p>
     {% endif %}
-</div>
 {% endblock %}

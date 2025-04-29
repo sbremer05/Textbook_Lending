@@ -9,6 +9,7 @@ class Collection(models.Model):
     is_public = models.BooleanField(default=True)
     allowed_users = models.ManyToManyField(User, blank=True, related_name='allowed_collections')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collections')
+    # items = models.ManyToManyField(Item, blank=True, related_name='collections')
 
     def __str__(self):
         return self.title
