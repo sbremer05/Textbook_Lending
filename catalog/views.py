@@ -370,6 +370,12 @@ def collection_detail(request, pk):
             for item_id in item_ids:
                 try:
                     item = get_object_or_404(Item, id=item_id)
+
+                    if not collection.is_public:
+                        for c in item.collections.all():
+                            if c.is_public:
+                                item.collections.remove(c)
+
                     collection.items.add(item)
                     added_count += 1
                 except Item.DoesNotExist:
@@ -392,7 +398,7 @@ def collection_detail(request, pk):
             return redirect('collection_detail', pk=collection.id)
 
     # Available items
-    available_items = Item.objects.exclude(id__in=collection.items.values_list('id', flat=True))
+    available_items = Item.objects.exclude(id__in=collection.items.values_list('id', flat=True)).exclude(collections__is_public=False).distinct()
     can_add_items = (request.user == collection.created_by and request.user.profile.role in ["patron", "librarian"])
 
     return render(request, "catalog/collection_detail.html", {
