@@ -2,18 +2,230 @@
 
 {% block title %}Edit Item{% endblock %}
 
+{% block extra_styles %}
+    <style>
+        /* Form container */
+        .edit-item-container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #2c3e50;
+        }
+        .edit-item-container h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+
+        /* Basic field styles */
+        .edit-item-container input[type="text"],
+        .edit-item-container input[type="file"],
+        .edit-item-container select,
+        .edit-item-container textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 20px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: #f9fafe;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .edit-item-container textarea {
+            resize: vertical;
+            min-height: 160px;
+        }
+        .edit-item-container input:focus,
+        .edit-item-container select:focus,
+        .edit-item-container textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+            background: #fff;
+        }
+
+        /* Searchable checkboxes */
+        .checkbox-list {
+            margin-bottom: 20px;
+        }
+        .checkbox-container {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            background: #f9fafe;
+        }
+        .checkbox-search-container {
+            position: sticky;
+            top: 0;
+            background: #f9fafe;
+            padding: 10px;
+            z-index: 1;
+            border-bottom: 1px solid #eee;
+        }
+        .checkbox-search {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        .checkbox-search:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+        }
+        .checkbox-options {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .checkbox-item:last-child {
+            border-bottom: none;
+        }
+        .checkbox-item:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: auto;
+            accent-color: #3498db;
+        }
+        .checkbox-count {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin: 8px 0 5px;
+            padding: 0 2px;
+        }
+        .no-results {
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            display: none;
+        }
+        .checkbox-item.hidden {
+            display: none;
+        }
+
+        /* Submit button */
+        .edit-item-container button.save-btn {
+            align-self: flex-start;
+            padding: 12px 24px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .edit-item-container button.save-btn:hover {
+            background: #2980b9;
+        }
+        .edit-item-container button.save-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Cancel link */
+        .edit-item-container a.cancel-link {
+            display: inline-block;
+            margin-top: 24px;
+            font-size: 0.95rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .edit-item-container a.cancel-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  <h1 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">Edit Item</h1>
-  <form method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" style="background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-      Save Changes
-    </button>
-  </form>
-  <a href="{% url 'item_detail' item.pk %}" class="cancel-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
-    ← Cancel
-  </a>
-</div>
+    {% if user.is_authenticated %}
+        <div class="edit-item-container">
+            <h1>Edit Item</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.title.label_tag }} {{ form.title }}
+                {{ form.author.label_tag }} {{ form.author }}
+                {{ form.location.label_tag }} {{ form.location }}
+                {{ form.description.label_tag }} {{ form.description }}
+
+                <div class="checkbox-list">
+                    {{ form.collections.label_tag }}
+                    <div class="checkbox-container">
+                        <div class="checkbox-search-container">
+                            <input type="text" class="checkbox-search" placeholder="Type to search collections...">
+                            <div class="checkbox-count">
+                                Showing {{ form.collections.field.queryset.count }} collections
+                            </div>
+                        </div>
+                        <div class="no-results">No matching collections found</div>
+                        <div class="checkbox-options">
+                            {% for checkbox in form.collections %}
+                                <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}">
+                                    {{ checkbox.tag }}
+                                    <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {{ form.collections.errors }}
+                </div>
+
+                {{ form.image.label_tag }} {{ form.image }}
+
+                <button type="submit" class="save-btn">Save Changes</button>
+            </form>
+
+            <a href="{% url 'item_detail' item.pk %}" class="cancel-link">← Cancel</a>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.querySelector('.checkbox-search');
+                const checkboxes = document.querySelectorAll('.checkbox-item');
+                const noResults = document.querySelector('.no-results');
+                const checkboxCount = document.querySelector('.checkbox-count');
+                const totalItems = checkboxes.length;
+
+                // Update count display
+                function updateVisibleCount(visible) {
+                    checkboxCount.textContent = `Showing ${visible} of ${totalItems} collections`;
+                }
+                updateVisibleCount(totalItems);
+
+                // Search functionality
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    let visibleCount = 0;
+
+                    checkboxes.forEach(item => {
+                        const matches = item.dataset.search.includes(searchTerm);
+                        item.classList.toggle('hidden', !matches);
+                        if (matches) visibleCount++;
+                    });
+
+                    // Show/hide no results message
+                    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+                    updateVisibleCount(visibleCount);
+                });
+            });
+        </script>
+    {% else %}
+        <p>You must be logged in to edit items.</p>
+        <p><a href="{% url 'home' %}">Go back to home</a></p>
+    {% endif %}
 {% endblock %}

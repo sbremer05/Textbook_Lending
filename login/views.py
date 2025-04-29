@@ -42,16 +42,14 @@ def post_login_redirect(request):
     if social_account:
         profile, created = Profile.objects.get_or_create(user=user)
 
-        if created or not profile.is_setup:
-            print(f"User {user.username} assigned default role: Patron.")
+        if not profile.role:  # Only if no role at all
             profile.role = "patron"
             profile.is_setup = True
             profile.save()
-            # return redirect("patron_dashboard")
 
         print(f"Redirecting {user.username} to their dashboard ({profile.role})")
         # return redirect("librarian_dashboard" if profile.role == "librarian" else "patron_dashboard")
-        return redirect("home" if profile.role == "librarian" else "home")
+        return redirect("home")
     else:
         return redirect("/")
 
