@@ -385,7 +385,7 @@ def collection_detail(request, pk):
             try:
                 item = get_object_or_404(Item, id=item_id)
                 collection.items.remove(item)
-                messages.success(request, f"🗑️ '{item.title}' was removed from the collection!")
+                messages.success(request, f"🗑️ {item.title} was removed from the collection!")
             except Item.DoesNotExist:
                 messages.error(request, "❌ Item could not be found.")
 
