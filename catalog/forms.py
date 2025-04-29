@@ -32,6 +32,13 @@ class CollectionForm(forms.ModelForm):
         label="Users",
     )
 
+    items = forms.ModelMultipleChoiceField(
+        queryset=Item.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Books",
+    )
+
     class Meta:
         model = Collection
         fields = [
@@ -39,6 +46,7 @@ class CollectionForm(forms.ModelForm):
             'description',
             'is_public',
             'allowed_users',
+            'items',
         ]
 
     def __init__(self, *args, **kwargs):
