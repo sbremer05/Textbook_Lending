@@ -187,118 +187,135 @@
 {% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <div class="add-collection-container">
-            <h1>Edit Collection</h1>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">✏️ Edit Collection</h1>
 
-                <!-- Basic Collection Info -->
-                {{ form.title.label_tag }} {{ form.title }}
-                {{ form.description.label_tag }} {{ form.description }}
+    <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
+      {% csrf_token %}
+      
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label for="title" style="color: #a5b4fc; font-size: 0.9em;">Title</label>
+        <input type="text" name="title" id="title" value="{{ collection.title }}" required 
+               style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 8px; width: 100%;">
+      </div>
 
-                <!-- Public/Private Toggle -->
-                <div class="form-group">
-                    {{ form.is_public.label_tag }}
-                    {{ form.is_public }}
-                </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label for="description" style="color: #a5b4fc; font-size: 0.9em;">Description</label>
+        <textarea name="description" id="description" rows="4" required
+                  style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 8px; width: 100%; resize: vertical;">{{ collection.description }}</textarea>
+      </div>
 
-                <!-- Conditional Access Control Sections -->
-                <div id="access-control" class="access-control-section" style="display: none;">
-                    <div class="checkbox-section-title">Grant Access to Users</div>
-                    <div class="checkbox-list">
-                        <div class="checkbox-container">
-                            <div class="checkbox-search-container">
-                                <input type="text" class="checkbox-search users-search" placeholder="Search users by name or email...">
-                                <div class="checkbox-count users-count">
-                                    Showing {{ form.allowed_users.field.queryset.count }} users
-                                </div>
-                            </div>
-                            <div class="no-results users-no-results">No matching users found</div>
-                            <div class="checkbox-options users-options">
-                                {% for checkbox in form.allowed_users %}
-                                    <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}">
-                                        {{ checkbox.tag }}
-                                        <label for="{{ checkbox.id_for_label }}">
-                                            <div class="user-display">
-                                                <span class="username">{{ checkbox.choice_label }}</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {{ form.allowed_users.errors }}
-                    </div>
-                </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <input type="checkbox" name="is_public" id="is_public" {% if collection.is_public %}checked{% endif %}
+               style="accent-color: #6366f1;">
+        <label for="is_public" style="color: #a5b4fc; font-size: 0.9em;">Make this collection public</label>
+      </div>
 
-                <!-- Items to Include -->
-                <div class="checkbox-section-title">Add Books to Collection</div>
-                <div class="checkbox-list">
-                    <div class="checkbox-container">
-                        <div class="checkbox-search-container">
-                            <input type="text" class="checkbox-search items-search" placeholder="Search books...">
-                            <div class="checkbox-count items-count">
-                                Showing {{ form.items.field.queryset.count }} books
-                            </div>
-                        </div>
-                        <div class="no-results items-no-results">No matching books found</div>
-                        <div class="checkbox-options items-options">
-                            {% for checkbox in form.items %}
-                                <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}">
-                                    {{ checkbox.tag }}
-                                    <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {{ form.items.errors }}
-                </div>
-
-                <button type="submit" class="save-btn">Save Changes</button>
-            </form>
-
-            <a href="{% url 'collection_detail' collection.pk %}" class="cancel-link">← Cancel</a>
+      <!-- Access Control Section -->
+      <div id="access-control" style="display: none; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <h3 style="color: #fff; margin-bottom: 15px;">Grant Access to Users</h3>
+        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+            <input type="text" class="checkbox-search" placeholder="Search users by name or email..." 
+                   style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
+            <div class="checkbox-count" style="color: #a5b4fc; margin-top: 10px;">
+              Showing {{ form.allowed_users.field.queryset.count }} users
+            </div>
+          </div>
+          <div class="no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
+            No matching users found
+          </div>
+          <div class="checkbox-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
+            {% for checkbox in form.allowed_users %}
+              <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}" 
+                   style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
+                  {{ checkbox.tag }}
+                  <span>{{ checkbox.choice_label }}</span>
+                </label>
+              </div>
+            {% endfor %}
+          </div>
         </div>
+      </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Toggle user access control
-                const isPublic = document.querySelector('#id_is_public');
-                const accessCtl = document.querySelector('#access-control');
-                function toggle() {
-                    accessCtl.style.display = isPublic.checked ? 'none' : 'block';
-                }
-                isPublic.addEventListener('change', toggle);
-                toggle();
+      <!-- Items Section -->
+      <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <h3 style="color: #fff; margin-bottom: 15px;">Add Books to Collection</h3>
+        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
+          <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+            <input type="text" class="checkbox-search" placeholder="Search books..." 
+                   style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
+            <div class="checkbox-count" style="color: #a5b4fc; margin-top: 10px;">
+              Showing {{ form.items.field.queryset.count }} books
+            </div>
+          </div>
+          <div class="no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
+            No matching books found
+          </div>
+          <div class="checkbox-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
+            {% for checkbox in form.items %}
+              <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}" 
+                   style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
+                  {{ checkbox.tag }}
+                  <span>{{ checkbox.choice_label }}</span>
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
 
-                // Search setup
-                function setupSearch(inputCls, optsCls, cntCls, noCls) {
-                    const input = document.querySelector(`.${inputCls}`);
-                    const items = document.querySelectorAll(`.${optsCls} .checkbox-item`);
-                    const noRes = document.querySelector(`.${noCls}`);
-                    const count = document.querySelector(`.${cntCls}`);
-                    const total = items.length;
-                    function upd(v) { count.textContent = `Showing ${v} of ${total}`; }
-                    upd(total);
-                    input.addEventListener('input', e => {
-                        const term = e.target.value.toLowerCase();
-                        let vis = 0;
-                        items.forEach(i => {
-                            const ok = i.dataset.search.includes(term);
-                            i.classList.toggle('hidden', !ok);
-                            if (ok) vis++;
-                        });
-                        noRes.style.display = vis ? 'none' : 'block';
-                        upd(vis);
-                    });
-                }
-                setupSearch('users-search','users-options','users-count','users-no-results');
-                setupSearch('items-search','items-options','items-count','items-no-results');
-            });
-        </script>
-    {% else %}
-        <p>{{ error_message }}</p>
-        <p><a href="{% url 'home' %}">Go back to home</a></p>
-    {% endif %}
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <a href="{% url 'view_collections' %}" 
+           style="padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+          Cancel
+        </a>
+        <button type="submit" 
+                style="padding: 12px 24px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle user access control
+    const isPublic = document.querySelector('#is_public');
+    const accessCtl = document.querySelector('#access-control');
+    function toggle() {
+      accessCtl.style.display = isPublic.checked ? 'none' : 'block';
+    }
+    isPublic.addEventListener('change', toggle);
+    toggle();
+
+    // Search setup
+    function setupSearch(inputCls, optsCls, cntCls, noCls) {
+      const input = document.querySelector(`.${inputCls}`);
+      const items = document.querySelectorAll(`.${optsCls} .checkbox-item`);
+      const noRes = document.querySelector(`.${noCls}`);
+      const count = document.querySelector(`.${cntCls}`);
+      const total = items.length;
+      function upd(v) { count.textContent = `Showing ${v} of ${total}`; }
+      upd(total);
+      input.addEventListener('input', e => {
+        const term = e.target.value.toLowerCase();
+        let vis = 0;
+        items.forEach(i => {
+          const ok = i.dataset.search.includes(term);
+          i.classList.toggle('hidden', !ok);
+          if (ok) vis++;
+        });
+        noRes.style.display = vis === 0 ? 'block' : 'none';
+        upd(vis);
+      });
+    }
+    setupSearch('users-search','users-options','users-count','users-no-results');
+    setupSearch('items-search','items-options','items-count','items-no-results');
+  });
+</script>
 {% endblock %}

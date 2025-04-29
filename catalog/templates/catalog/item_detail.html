@@ -3,93 +3,100 @@
 {% block title %}{{ item.title }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-  <div class="card shadow-sm">
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
     {% if item.image %}
-      <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+      <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width: 100%; max-width: 300px; border-radius: 8px; margin-bottom: 20px;">
     {% endif %}
-    <div class="card-body">
-      <h1 class="card-title text-primary">{{ item.title }}</h1>
-      <p class="card-text">
-        <strong>Author:</strong> {{ item.author }}<br>
-        <strong>Status:</strong> {{ item.get_status_display }}<br>
-        <strong>Location:</strong> {{ item.location }}
-      </p>
-      <p class="card-text">{{ item.description }}</p>
+    
+    <h1 style="color: #fff; margin-bottom: 20px;">{{ item.title }}</h1>
+    
+    <div style="display: grid; gap: 15px; margin-bottom: 30px;">
+      <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <p style="color: #fff; margin: 0 0 5px 0;"><strong>Author:</strong> {{ item.author }}</p>
+        <p style="color: #a5b4fc; margin: 0 0 5px 0;"><strong>Status:</strong> {{ item.get_status_display }}</p>
+        <p style="color: #a5b4fc; margin: 0;"><strong>Location:</strong> {{ item.location }}</p>
+      </div>
+      
+      <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <p style="color: #fff; margin: 0;">{{ item.description }}</p>
+      </div>
+    </div>
 
-  <!-- {% if user.profile.role == 'librarian' %}
-    <a href="{% url 'edit_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">✏️ Edit</a>
-    &nbsp;
-    <a href="{% url 'delete_item' item.id %}" style="color: #3498db; text-decoration: none; font-weight: bold;">🗑️ Delete</a>
-  {% endif %} -->
-
-      {% if user.is_authenticated %}
-        {% if is_borrowed_by_user %}
-          <div class="alert alert-info mt-3" role="alert">
+    {% if user.is_authenticated %}
+      {% if is_borrowed_by_user %}
+        <div style="background: rgba(99, 102, 241, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2); margin-bottom: 20px;">
+          <p style="color: #a5b4fc; margin: 0;">
             You are currently borrowing this item.
             {% if borrow_due_date %}
               <br>
               <small>Due Date: {{ borrow_due_date|date:"M d, Y" }}</small>
             {% endif %}
-          </div>
-        {% elif already_requested %}
-          <div class="alert alert-warning mt-3" role="alert">
-            You have already requested this item.
-          </div>
-        {% elif is_borrowed %}
-          <div class="alert alert-warning mt-3" role="alert">
-            This item is currently being borrowed.
-          </div>
-        {% else %}
-          <form method="post" action="{% url 'request_borrow' item.id %}" class="mt-3">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success btn-lg">
-              📚 Request to Borrow
-            </button>
-          </form>
-        {% endif %}
-      {% endif %}
-
-      {% if user.profile.role == 'librarian' %}
-        <div class="mt-4">
-          <a href="{% url 'edit_item' item.id %}" class="btn btn-outline-primary">✏️ Edit</a>
-          <a href="{% url 'delete_item' item.id %}" class="btn btn-outline-danger">🗑️ Delete</a>
+          </p>
         </div>
+      {% elif already_requested %}
+        <div style="background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); margin-bottom: 20px;">
+          <p style="color: #fbbf24; margin: 0;">You have already requested this item.</p>
+        </div>
+      {% elif is_borrowed %}
+        <div style="background: rgba(245, 158, 11, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); margin-bottom: 20px;">
+          <p style="color: #fbbf24; margin: 0;">This item is currently being borrowed.</p>
+        </div>
+      {% else %}
+        <form method="post" action="{% url 'request_borrow' item.id %}" style="margin-bottom: 20px;">
+          {% csrf_token %}
+          <button type="submit" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;">
+            📚 Request to Borrow
+          </button>
+        </form>
       {% endif %}
-    </div>
+    {% endif %}
+
+    {% if user.profile.role == 'librarian' %}
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <a href="{% url 'edit_item' item.id %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+          ✏️ Edit
+        </a>
+        <a href="{% url 'delete_item' item.id %}" style="display: inline-block; padding: 12px 24px; background: rgba(239, 68, 68, 0.1); color: #ef4444; text-decoration: none; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); transition: all 0.3s;">
+          🗑️ Delete
+        </a>
+      </div>
+    {% endif %}
   </div>
 
   <!-- Reviews Section -->
-  <div class="card mt-5 shadow-sm">
-    <div class="card-body">
-      <h3 class="card-title text-secondary">Reviews</h3>
-      {% if reviews %}
-        <ul class="list-unstyled">
-          {% for review in reviews %}
-            <li class="border-bottom pb-3 mb-3">
-              <p class="mb-1">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <h3 style="color: #fff; margin-bottom: 20px;">Reviews</h3>
+    {% if reviews %}
+      <div style="display: grid; gap: 20px;">
+        {% for review in reviews %}
+          <div style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <p style="color: #fff; margin: 0;">
                 <strong>{{ review.user.username }}</strong>
                 <span>
                   {% for i in "12345"|make_list %}
                     {% if forloop.counter <= review.rating %}
-                      <span class="text-warning">&#9733;</span>
+                      <span style="color: #fbbf24;">&#9733;</span>
                     {% endif %}
                   {% endfor %}
                 </span>
               </p>
-              <p class="mb-1">{{ review.comment }}</p>
-              <small class="text-muted">Reviewed on {{ review.created_at|date:"M d, Y" }}</small>
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p class="text-muted">No reviews yet. Be the first to review this item!</p>
-      {% endif %}
-    </div>
+              <small style="color: #a5b4fc;">{{ review.created_at|date:"M d, Y" }}</small>
+            </div>
+            <p style="color: #a5b4fc; margin: 0;">{{ review.comment }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: #a5b4fc;">No reviews yet. Be the first to review this item!</p>
+    {% endif %}
   </div>
 
-  <div class="mt-4">
-    <a href="{% url 'view_items' %}" class="btn btn-link">← Back to Items</a>
+  <div style="text-align: center;">
+    <a href="{% url 'view_items' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      ← Back to Items
+    </a>
   </div>
 </div>
 {% endblock %}

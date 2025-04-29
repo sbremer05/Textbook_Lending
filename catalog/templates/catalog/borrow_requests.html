@@ -2,60 +2,65 @@
 {% block title %}Borrow Requests{% endblock %}
 
 {% block content %}
-<div class="container my-5" style="max-width: 800px;">
-  <h2 class="text-center text-primary mb-4">📥 Borrow Requests</h2>
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
   {% if user.is_authenticated %}
-    <p class="text-center">Welcome, {{ user.get_full_name|default:user.username}}!</p>
-  {% if requests %}
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead class="thead-dark">
-          <tr>
-            <th>Item</th>
-            <th>Patron</th>
-            <th>Requested At</th>
-            <th>Status</th>
-            <th>Due Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+      <h1 style="color: #fff; text-align: center; margin-bottom: 20px;">📥 Borrow Requests</h1>
+      <p style="color: #a5b4fc; text-align: center; margin-bottom: 30px;">Welcome, {{ user.get_full_name|default:user.username }}!</p>
+
+      {% if requests %}
+        <div style="display: grid; gap: 15px;">
           {% for req in requests %}
-            <tr>
-              <td>{{ req.item.title }}</td>
-              <td>{{ req.patron.get_full_name|default:req.patron.username }}</td>
-              <td>{{ req.requested_at|date:"M d, Y H:i" }}</td>
-              <td>{{ req.get_status_display }}</td>
-              <td>
-                {% if req.due_date %}
-                  {{ req.due_date|date:"M d, Y" }}
-                {% else %}
-                  —
-                {% endif %}
-              </td>
-              <td>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                  <h3 style="color: #fff; margin: 0 0 5px 0;">{{ req.item.title }}</h3>
+                  <p style="color: #a5b4fc; margin: 0;">Requested by: {{ req.patron.get_full_name|default:req.patron.username }}</p>
+                </div>
+                <span style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 4px 12px; border-radius: 12px; font-size: 0.9em;">
+                  {{ req.get_status_display }}
+                </span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="color: #a5b4fc;">
+                  <p style="margin: 0;">Requested: {{ req.requested_at|date:"M d, Y H:i" }}</p>
+                  {% if req.due_date %}
+                    <p style="margin: 5px 0 0 0;">Due: {{ req.due_date|date:"M d, Y" }}</p>
+                  {% endif %}
+                </div>
+
                 {% if req.status == "pending" %}
-                  <a href="{% url 'approve_borrow_request' req.id %}" class="btn btn-sm btn-success">✅ Approve</a>
-                  <a href="{% url 'deny_borrow_request' req.id %}" class="btn btn-sm btn-danger ml-2">❌ Deny</a>
-                {% else %}
-                  <span class="text-muted">No actions</span>
+                  <div style="display: flex; gap: 10px;">
+                    <a href="{% url 'approve_borrow_request' req.id %}" style="display: inline-block; padding: 8px 16px; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+                      ✅ Approve
+                    </a>
+                    <a href="{% url 'deny_borrow_request' req.id %}" style="display: inline-block; padding: 8px 16px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+                      ❌ Deny
+                    </a>
+                  </div>
                 {% endif %}
-              </td>
-            </tr>
+              </div>
+            </div>
           {% endfor %}
-        </tbody>
-      </table>
+        </div>
+      {% else %}
+        <p style="color: #a5b4fc; text-align: center;">There are no borrow requests at this time.</p>
+      {% endif %}
+    </div>
+
+    <div style="text-align: center;">
+      <a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+        ← Back to Dashboard
+      </a>
     </div>
   {% else %}
-    <p class="text-center text-muted">There are no borrow requests at this time.</p>
+    <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); text-align: center;">
+      <p style="color: #ef4444; margin: 0;">{{ error_message }}</p>
+      <a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); margin-top: 15px; transition: all 0.3s;">
+        Go back to home
+      </a>
+    </div>
   {% endif %}
-  <div class="text-center mt-4">
-    <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-  </div>
 </div>
-    </p>
-  {% else %}
-  <p>{{ error_message }}</p>
-  <p><a href = "{% url 'home' %}">Go back to home</a></p>
-  {% endif %}
 {% endblock %}

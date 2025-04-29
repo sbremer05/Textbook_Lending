@@ -3,19 +3,21 @@
 {% block title %}Delete Collection{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 600px; margin: 100px auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center;">
-  <h1 style="color: #c0392b; margin-bottom: 20px;">Delete Collection</h1>
-  <p style="color: #2c3e50; font-size: 1.1em;">Are you sure you want to delete <strong>{{ collection.title }}</strong>?</p>
+<div class="dashboard-container" style="max-width: 600px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center;">
+    <h1 style="color: #ef4444; margin-bottom: 20px;">Delete Collection</h1>
+    <p style="color: #fff; font-size: 1.1em; margin-bottom: 30px;">Are you sure you want to delete <strong>{{ collection.title }}</strong>?</p>
 
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn-delete" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 20px;">
-      Yes, Delete
-    </button>
-  </form>
+    <form method="POST" style="margin-bottom: 20px;">
+      {% csrf_token %}
+      <button type="submit" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;">
+        Yes, Delete
+      </button>
+    </form>
 
-  <a href="{% url 'collection_detail' collection.pk %}" class="cancel-link" style="display: block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">
-    ← Cancel
-  </a>
+    <a href="{% url 'collection_detail' collection.pk %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      ← Cancel
+    </a>
+  </div>
 </div>
 {% endblock %}

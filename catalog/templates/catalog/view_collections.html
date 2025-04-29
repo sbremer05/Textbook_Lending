@@ -1,52 +1,74 @@
-{% extends 'search_base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}📂 View Collections{% endblock %}
 
-{% block opening %}
-    <h1 class="text-center text-primary mb-4">📂 View Collections</h1>
-
-    {% if user.is_authenticated %}
-        <div class="text-center mb-4">
-            <a href="{% url 'add_collection' %}" class="btn btn-success btn-lg">
-                ➕ Add New Collection
-            </a>
-        </div>
-    {% endif %}
+{% block extra_styles %}
+    <style>
+        .public-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+        .private-badge {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+    </style>
 {% endblock %}
 
-{% block search_results %}
-    <div class="container my-5" style="max-width: 800px;">
-        <div class="list-group">
-            {% for collection in collections %}
-                <a href="{% url 'collection_detail' collection.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1">{{ collection.title }}</h5>
-                        <small class="text-muted">
-                            {% if collection.is_public %}
-                                (Public)
-                            {% else %}
-                                (Private)
-                            {% endif %}
-                        </small>
-                    </div>
-                    {% if not collection.is_public and user.is_authenticated and user.profile.role != 'librarian' and user != collection.created_by and user not in collection.allowed_users.all %}
-                        <form method="post" action="{% url 'request_collection_access' collection.id %}" class="mb-0">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-warning btn-sm">Request Access</button>
-                        </form>
-                    {% endif %}
-                </a>
-            {% empty %}
-                <p class="text-center text-muted my-4">No collections found.</p>
-            {% endfor %}
-        </div>
+{% block content %}
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">📂 View Collections</h1>
 
-        <div class="text-center mt-4">
-            {% if user.is_authenticated and user.profile.role == "librarian" %}
-                <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-            {% else %}
-                <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-            {% endif %}
-        </div>
-    </div>
+    {% if user.is_authenticated %}
+      <div style="text-align: center; margin-bottom: 30px;">
+        <a href="{% url 'add_collection' %}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+          ➕ Add New Collection
+        </a>
+      </div>
+    {% endif %}
+
+    {% if collections %}
+      <div style="display: grid; gap: 15px;">
+        {% for collection in collections %}
+          <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="color: #fff; margin: 0 0 5px 0;">{{ collection.title }}</h3>
+                <span class="{% if collection.is_public %}public-badge{% else %}private-badge{% endif %}">
+                  {% if collection.is_public %}Public{% else %}Private{% endif %}
+                </span>
+              </div>
+              {% if not collection.is_public and user.is_authenticated and user.profile.role != 'librarian' and user != collection.created_by and user not in collection.allowed_users.all %}
+                <form method="post" action="{% url 'request_collection_access' collection.id %}" style="margin: 0;">
+                  {% csrf_token %}
+                  <button type="submit" style="display: inline-block; padding: 8px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;">
+                    🔒 Request Access
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+            <a href="{% url 'collection_detail' collection.id %}" style="display: block; margin-top: 15px; padding: 8px 16px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; text-align: center; transition: all 0.3s;">
+              View Collection →
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: #a5b4fc; text-align: center;">No collections found.</p>
+    {% endif %}
+  </div>
+
+  <div style="text-align: center;">
+    <a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      ← Back to Dashboard
+    </a>
+  </div>
+</div>
 {% endblock %}

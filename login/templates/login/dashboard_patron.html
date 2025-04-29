@@ -3,32 +3,43 @@
 {% block title %}Patron Dashboard{% endblock %}
 
 {% block content %}
-<div class="container my-5" style="max-width: 800px;">
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body text-center">
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div style="text-align: center;">
       {% if user.profile.profile_picture %}
-        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" class="rounded-circle mb-3" style="width:150px; height:150px; object-fit:cover;">
+        <img src="{{ user.profile.profile_picture.url }}" alt="{{ user.username }} profile" style="width:150px; height:150px; object-fit:cover; border-radius: 50%; margin-bottom: 20px;">
       {% endif %}
-      <h2 class="card-title">Welcome, {{ user.username|title }}! <small class="text-muted">(Patron)</small></h2>
-      <p class="card-text">Email: {{ user.email }}</p>
-{#      <a href="{% url 'search_home' %}" class="btn btn-primary btn-lg mb-3">🔍 Go to Search Page</a>#}
+      <h2 style="color: #fff; margin-bottom: 10px;">Welcome, {{ user.username|title }}! <small style="color: #a5b4fc;">(Patron)</small></h2>
+      <p style="color: #a5b4fc;">Email: {{ user.email }}</p>
     </div>
   </div>
 
-  <h3 class="mb-3">Dashboard</h3>
-  <div class="list-group mb-4">
-    <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Available Books</a>
-    <a href="{% url 'my_borrowed_items' %}" class="list-group-item list-group-item-action">📖 View Borrowed Books</a>
-    <a href="#" class="list-group-item list-group-item-action disabled">🔔 Notifications (Coming Soon)</a>
-    <a href="{% url 'view_collections' %}" class="list-group-item list-group-item-action">📂 Manage Collections</a> 
+  <h3 style="color: #fff; margin-bottom: 20px;">Dashboard</h3>
+  <div style="display: grid; gap: 15px; margin-bottom: 30px;">
+    <a href="{% url 'view_items' %}" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 15px 20px; border-radius: 8px; color: #fff; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      📚 Browse Available Books
+    </a>
+    <a href="{% url 'my_borrowed_items' %}" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 15px 20px; border-radius: 8px; color: #fff; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      📖 View Borrowed Books
+    </a>
+    <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 15px 20px; border-radius: 8px; color: #a5b4fc; border: 1px solid rgba(255, 255, 255, 0.1);">
+      🔔 Notifications (Coming Soon)
+    </div>
+    <a href="{% url 'view_collections' %}" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 15px 20px; border-radius: 8px; color: #fff; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      📂 Manage Collections
+    </a>
   </div>
 
-  <div class="text-center">
-    <form method="POST" action="{% url 'request_librarian' %}" class="mb-3">
+  <div style="text-align: center;">
+    <form method="POST" action="{% url 'request_librarian' %}" style="margin-bottom: 15px;">
       {% csrf_token %}
-      <button type="submit" class="btn btn-outline-primary">Request Librarian Status</button>
+      <button type="submit" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;">
+        Request Librarian Status
+      </button>
     </form>
-    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+    <a href="{% url 'logout' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      Logout
+    </a>
   </div>
 </div>
 {% endblock %}

@@ -65,138 +65,150 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-
-        <!-- Header section remains the same -->
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 style="color: #2c3e50; margin: 0;">
-                {{ collection.title }}
-                <span style="font-size: 0.8em; color: #7f8c8d; font-style: italic;">by {{ collection.created_by }}</span>
-            </h1>
-            {% if user == collection.created_by %}
-                <div>
-                    <a href="{% url 'edit_collection' collection.id %}" style="margin-right: 10px; text-decoration: none; color: #f39c12;">✏️ Edit</a>
-                    <a href="{% url 'delete_collection' collection.id %}" style="text-decoration: none; color: #e74c3c;">🗑️ Delete</a>
-                </div>
-            {% endif %}
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div>
+        <h1 style="color: #fff; margin: 0 0 5px 0;">{{ collection.title }}</h1>
+        <p style="color: #a5b4fc; margin: 0;">by {{ collection.created_by }}</p>
+      </div>
+      {% if user == collection.created_by %}
+        <div style="display: flex; gap: 10px;">
+          <a href="{% url 'edit_collection' collection.id %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+            ✏️ Edit
+          </a>
+          <a href="{% url 'delete_collection' collection.id %}" style="display: inline-block; padding: 12px 24px; background: rgba(239, 68, 68, 0.1); color: #ef4444; text-decoration: none; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); transition: all 0.3s;">
+            🗑️ Delete
+          </a>
         </div>
-
-        <p style="color: #7f8c8d; margin-top: 10px;">{{ collection.description }}</p>
-
-        {% if user.is_authenticated and user.profile.role == 'librarian' and not collection.is_public %}
-            <a href="{% url 'view_collection_access_requests' collection.id %}" style="display: inline-block; margin-bottom: 15px; color: #3498db; text-decoration: none; font-weight: bold;">📥 View Access Requests</a>
-        {% endif %}
-
-        <!-- Search form remains the same -->
-        <form method="get" action="" style="margin-bottom: 25px;">
-            <label for="query" style="font-weight: bold; color: #2c3e50;">Search in this Collection:</label>
-            <input type="text" id="query" name="query" placeholder="Enter keywords..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #bdc3c7; border-radius: 5px;">
-            <button type="submit" style="margin-top: 10px; padding: 10px 15px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                🔍 Search
-            </button>
-        </form>
-
-        <!-- Updated Add Items section with searchable checkboxes -->
-        {% if can_add_items %}
-            <form method="post" action="" style="margin-bottom: 25px;">
-                {% csrf_token %}
-                <label style="font-weight: bold; color: #2c3e50;">Add Existing Books:</label>
-
-                <div class="checkbox-container">
-                    <div class="checkbox-search-container">
-                        <input type="text" class="checkbox-search" placeholder="Search books..." id="item-search">
-                        <div class="checkbox-count" id="item-count">
-                            Showing {{ available_items.count }} books
-                        </div>
-                    </div>
-                    <div class="no-results" id="item-no-results">No matching books found</div>
-                    <div class="checkbox-options" id="item-options">
-                        {% for item in available_items %}
-                            <div class="checkbox-item" data-search="{{ item.title|lower }} {{ item.author|lower }}">
-                                <input type="checkbox" name="item_ids" value="{{ item.id }}" id="item-{{ item.id }}">
-                                <label for="item-{{ item.id }}">
-                                    {{ item.title }}
-                                    <span style="color: #7f8c8d; font-size: 0.85rem; margin-left: 5px;">
-                  by {{ item.author }}
-                </span>
-                                </label>
-                            </div>
-                        {% empty %}
-                            <div style="padding: 15px; color: #7f8c8d; text-align: center;">
-                                No available items to add.
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <button type="submit" name="add_items" style="margin-top: 10px; padding: 10px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                    ➕ Add Selected to Collection
-                </button>
-            </form>
-        {% endif %}
-
-        <!-- Items list remains the same -->
-        <h2 style="color: #2c3e50; margin-bottom: 15px;">Items in this Collection</h2>
-        {% if items %}
-            <ul style="padding: 0;">
-                {% for item in items %}
-                    <li style="list-style: none; background-color: #f9f9f9; padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <a href="{% url 'item_detail' item.id %}" style="font-size: 1.1em; font-weight: 600; color: #2c3e50; text-decoration: none;">
-                                📘 {{ item.title }}
-                            </a>
-                            <div style="font-size: 0.9em; color: #7f8c8d; font-style: italic; margin-top: 5px;">
-                                Status: {{ item.get_status_display|title }}
-                            </div>
-                        </div>
-                        {% if user == collection.created_by %}
-                            <form method="post" action="" style="margin-left: 15px;">
-                                {% csrf_token %}
-                                <input type="hidden" name="remove_item" value="{{ item.id }}">
-                                <button type="submit" style="background-color: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">
-                                    ❌ Remove
-                                </button>
-                            </form>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p style="color: #7f8c8d;">No items in this collection.</p>
-        {% endif %}
-
-        <a href="{% url 'view_collections' %}" class="back-link" style="display: inline-block; margin-top: 25px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Collections</a>
+      {% endif %}
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Setup search functionality for items
-            const itemSearch = document.getElementById('item-search');
-            const itemCheckboxes = document.querySelectorAll('#item-options .checkbox-item');
-            const itemNoResults = document.getElementById('item-no-results');
-            const itemCount = document.getElementById('item-count');
-            const totalItems = itemCheckboxes.length;
+    <p style="color: #a5b4fc; margin-bottom: 20px;">{{ collection.description }}</p>
 
-            function updateItemCount(visible) {
-                itemCount.textContent = `Showing ${visible} of ${totalItems} books`;
-            }
-            updateItemCount(totalItems);
+    {% if user.is_authenticated and user.profile.role == 'librarian' and not collection.is_public %}
+      <a href="{% url 'view_collection_access_requests' collection.id %}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-bottom: 20px; transition: transform 0.2s;">
+        📥 View Access Requests
+      </a>
+    {% endif %}
 
-            itemSearch.addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                let visibleCount = 0;
+    <form method="get" action="" style="margin-bottom: 30px;">
+      <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <label for="query" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Search in this Collection:</label>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="query" name="query" placeholder="Enter keywords..." style="flex: 1; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
+          <button type="submit" style="padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+            🔍 Search
+          </button>
+        </div>
+      </div>
+    </form>
 
-                itemCheckboxes.forEach(item => {
-                    const matches = item.dataset.search.includes(searchTerm);
-                    item.classList.toggle('hidden', !matches);
-                    if (matches) visibleCount++;
-                });
+    {% if can_add_items %}
+      <form method="post" action="" style="margin-bottom: 30px;">
+        {% csrf_token %}
+        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+          <label style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Add Existing Books:</label>
+          
+          <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
+            <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <input type="text" class="checkbox-search" placeholder="Search books..." id="item-search" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
+              <div class="checkbox-count" id="item-count" style="color: #a5b4fc; margin-top: 10px;">
+                Showing {{ available_items.count }} books
+              </div>
+            </div>
+            <div class="no-results" id="item-no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
+              No matching books found
+            </div>
+            <div class="checkbox-options" id="item-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
+              {% for item in available_items %}
+                <div class="checkbox-item" data-search="{{ item.title|lower }} {{ item.author|lower }}" style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                  <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
+                    <input type="checkbox" name="item_ids" value="{{ item.id }}" style="accent-color: #6366f1;">
+                    <span>{{ item.title }}</span>
+                    <small style="color: #a5b4fc;">by {{ item.author }}</small>
+                  </label>
+                </div>
+              {% empty %}
+                <div style="padding: 15px; color: #a5b4fc; text-align: center;">
+                  No available items to add.
+                </div>
+              {% endfor %}
+            </div>
+          </div>
 
-                itemNoResults.style.display = visibleCount === 0 ? 'block' : 'none';
-                updateItemCount(visibleCount);
-            });
-        });
-    </script>
+          <button type="submit" name="add_items" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 20px; border: none; cursor: pointer; transition: transform 0.2s;">
+            ➕ Add Selected to Collection
+          </button>
+        </div>
+      </form>
+    {% endif %}
+
+    <h2 style="color: #fff; margin-bottom: 20px;">Items in this Collection</h2>
+    {% if items %}
+      <div style="display: grid; gap: 15px;">
+        {% for item in items %}
+          <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <a href="{% url 'item_detail' item.id %}" style="color: #fff; text-decoration: none; font-weight: 600; font-size: 1.1em;">
+                  📘 {{ item.title }}
+                </a>
+                <p style="color: #a5b4fc; margin: 5px 0 0 0;">Status: {{ item.get_status_display|title }}</p>
+              </div>
+              {% if user == collection.created_by %}
+                <form method="post" action="">
+                  {% csrf_token %}
+                  <input type="hidden" name="remove_item" value="{{ item.id }}">
+                  <button type="submit" style="padding: 8px 16px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; cursor: pointer;">
+                    ❌ Remove
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: #a5b4fc;">No items in this collection.</p>
+    {% endif %}
+  </div>
+
+  <div style="text-align: center;">
+    <a href="{% url 'view_collections' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      ← Back to Collections
+    </a>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const itemSearch = document.getElementById('item-search');
+    const itemCheckboxes = document.querySelectorAll('#item-options .checkbox-item');
+    const itemNoResults = document.getElementById('item-no-results');
+    const itemCount = document.getElementById('item-count');
+    const totalItems = itemCheckboxes.length;
+
+    function updateItemCount(visible) {
+      itemCount.textContent = `Showing ${visible} of ${totalItems} books`;
+    }
+    updateItemCount(totalItems);
+
+    itemSearch.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      let visibleCount = 0;
+
+      itemCheckboxes.forEach(item => {
+        const matches = item.dataset.search.includes(searchTerm);
+        item.classList.toggle('hidden', !matches);
+        if (matches) visibleCount++;
+      });
+
+      itemNoResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      updateItemCount(visibleCount);
+    });
+  });
+</script>
 {% endblock %}
 
 
