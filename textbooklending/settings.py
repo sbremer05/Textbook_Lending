@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'login',
     'storages',
     'catalog',
+    'crispy_forms'
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -244,3 +245,5 @@ LOGOUT_REDIRECT_URL = "/"
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # django_on_heroku.settings(locals())
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
