@@ -459,7 +459,9 @@ def search_items(items, query):
     if query:
         items = items.filter(
             Q(title__icontains = query) |
-            Q(description__icontains = query)
+            Q(description__icontains = query) |
+            Q(author__icontains = query) |
+            Q(id__icontains = query)
         )
     return items
 
