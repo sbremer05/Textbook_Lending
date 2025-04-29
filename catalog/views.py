@@ -109,8 +109,11 @@ def item_detail(request, pk):
     has_access = False
     for collection in collections:
         if (collection.is_public or 
+        (request.user.is_authenticated and (
             request.user == collection.created_by or 
-            request.user in collection.allowed_users.all() or request.user.profile.role == 'librarian'):
+            request.user in collection.allowed_users.all() or 
+            request.user.profile.role == 'librarian'
+        ))):
             has_access = True
             break
 
