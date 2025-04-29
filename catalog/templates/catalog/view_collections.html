@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'search_base.html' %}
 
 {% block title %}📂 View Collections{% endblock %}
 
@@ -21,19 +21,21 @@
     </style>
 {% endblock %}
 
-{% block content %}
-<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
-  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
-    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">📂 View Collections</h1>
+{% block opening %}
+    <div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+      <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+        <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">📂 View Collections</h1>
 
-    {% if user.is_authenticated %}
-      <div style="text-align: center; margin-bottom: 30px;">
-        <a href="{% url 'add_collection' %}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
-          ➕ Add New Collection
-        </a>
-      </div>
-    {% endif %}
+        {% if user.is_authenticated %}
+          <div style="text-align: center; margin-bottom: 30px;">
+            <a href="{% url 'add_collection' %}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+              ➕ Add New Collection
+            </a>
+          </div>
+        {% endif %}
+{% endblock %}
 
+{% block search_results %}
     {% if collections %}
       <div style="display: grid; gap: 15px;">
         {% for collection in collections %}
