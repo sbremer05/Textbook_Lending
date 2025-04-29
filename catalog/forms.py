@@ -59,6 +59,7 @@ class CollectionForm(forms.ModelForm):
 
 class ItemForm(forms.ModelForm):
     collections = forms.ModelMultipleChoiceField(
+        # queryset=Collection.objects.filter(is_public=True),
         queryset=Collection.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
