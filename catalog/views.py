@@ -461,7 +461,8 @@ def search_items(items, query):
             Q(title__icontains = query) |
             Q(description__icontains = query) |
             Q(author__icontains = query) |
-            Q(id__icontains = query)
+            Q(id__icontains = query) |
+            Q(location__icontains = query)
         )
     return items
 
