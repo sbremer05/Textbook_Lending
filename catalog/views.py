@@ -110,7 +110,7 @@ def item_detail(request, pk):
     for collection in collections:
         if (collection.is_public or 
             request.user == collection.created_by or 
-            request.user in collection.allowed_users.all()):
+            request.user in collection.allowed_users.all() or request.user.profile.role == 'librarian'):
             has_access = True
             break
 
