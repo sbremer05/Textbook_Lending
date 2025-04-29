@@ -350,53 +350,57 @@ def update_item_collections(request, pk):
 def collection_detail(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
 
-    # Access control for private collections
+    # Access control
     if not collection.is_public and request.user.profile.role != 'librarian' and request.user not in collection.allowed_users.all():
         messages.error(request, "❌ You do not have permission to view this collection.")
         return redirect('view_collections')
 
-    # Search query
+    # Search
     query = request.GET.get("query", "")
-
     if query:
-        items = collection.items.filter(
-            Q(title__icontains=query) | Q(description__icontains=query)
-        )
+        items = collection.items.filter(Q(title__icontains=query) | Q(description__icontains=query))
     else:
         items = collection.items.all()
 
-    # Handle adding an existing item to the collection
-    # if request.method == 'POST':
-    #     item_id = request.POST.get('item_id')
-    #     item = get_object_or_404(Item, id=item_id)
-    #     collection.items.add(item)
-    #     messages.success(request, f"✅ '{item.title}' was added to the collection!")
-    #     return redirect('collection_detail', pk=collection.id)
-    
+    # POST handling: Add or Remove
     if request.method == 'POST':
-        item_ids = request.POST.getlist('item_ids')
-        added_count = 0
-        for item_id in item_ids:
+        if 'add_items' in request.POST:
+            item_ids = request.POST.getlist('item_ids')
+            added_count = 0
+            for item_id in item_ids:
+                try:
+                    item = get_object_or_404(Item, id=item_id)
+                    collection.items.add(item)
+                    added_count += 1
+                except Item.DoesNotExist:
+                    messages.error(request, f"❌ Item with ID {item_id} does not exist.")
+
+            if added_count > 0:
+                messages.success(request, f"✅ {added_count} item(s) were added to the collection!")
+
+            return redirect('collection_detail', pk=collection.id)
+
+        if 'remove_item' in request.POST:
+            item_id = request.POST.get('remove_item')
             try:
                 item = get_object_or_404(Item, id=item_id)
-                collection.items.add(item)
-                added_count += 1
+                collection.items.remove(item)
+                messages.success(request, f"🗑️ '{item.title}' was removed from the collection!")
             except Item.DoesNotExist:
-                messages.error(request, f"❌ Item with ID {item_id} does not exist.")
+                messages.error(request, "❌ Item could not be found.")
 
-        if added_count > 0:
-            messages.success(request, f"✅ {added_count} item(s) were added to the collection!")
+            return redirect('collection_detail', pk=collection.id)
 
-        return redirect('collection_detail', pk=collection.id)
-
-    # Only show available items not already in the collection, added by this user
+    # Available items
     available_items = Item.objects.exclude(id__in=collection.items.values_list('id', flat=True))
+    can_add_items = (request.user == collection.created_by and request.user.profile.role in ["patron", "librarian"])
 
     return render(request, "catalog/collection_detail.html", {
         "collection": collection,
         "items": items,
         "available_items": available_items,
         "query": query,
+        "can_add_items": can_add_items,
     })
 
 def edit_collection(request, pk):

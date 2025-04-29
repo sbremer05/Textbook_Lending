@@ -32,7 +32,7 @@
     </button>
   </form>
 
-  {% if user == collection.created_by and user.profile.role in "patron librarian" %}
+  {% if can_add_items %}
     <form method="post" action="" style="margin-bottom: 25px;">
       {% csrf_token %}
       <label for="item" style="font-weight: bold; color: #2c3e50;">Add an Existing Book:</label>
@@ -43,23 +43,38 @@
           <option disabled>No available items to add.</option>
         {% endfor %}
       </select>
-      <button type="submit" style="margin-top: 10px; padding: 10px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
+      <button type="submit" name="add_items" style="margin-top: 10px; padding: 10px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 5px; cursor: pointer;">
         ➕ Add to Collection
       </button>
     </form>
   {% endif %}
-
 
   <h2 style="color: #2c3e50; margin-bottom: 15px;">Items in this Collection</h2>
 
   {% if items %}
     <ul style="padding: 0;">
       {% for item in items %}
-        <li style="list-style: none; background-color: #f9f9f9; padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-          <a href="{% url 'item_detail' item.id %}" style="font-size: 1.1em; font-weight: 600; color: #2c3e50; text-decoration: none;">
-            📘 {{ item.title }}
-          </a>
-          <span style="float: right; color: #7f8c8d; font-style: italic;">{{ item.get_status_display|title }}</span>
+        <li style="list-style: none; background-color: #f9f9f9; padding: 15px 20px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
+
+          <div>
+            <a href="{% url 'item_detail' item.id %}" style="font-size: 1.1em; font-weight: 600; color: #2c3e50; text-decoration: none;">
+              📘 {{ item.title }}
+            </a>
+            <div style="font-size: 0.9em; color: #7f8c8d; font-style: italic; margin-top: 5px;">
+              Status: {{ item.get_status_display|title }}
+            </div>
+          </div>
+
+          {% if user == collection.created_by %}
+            <form method="post" action="" style="margin-left: 15px;">
+              {% csrf_token %}
+              <input type="hidden" name="remove_item" value="{{ item.id }}">
+              <button type="submit" style="background-color: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 0.9em;">
+                ❌ Remove
+              </button>
+            </form>
+          {% endif %}
+
         </li>
       {% endfor %}
     </ul>
