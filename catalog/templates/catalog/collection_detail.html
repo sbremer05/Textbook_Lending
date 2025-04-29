@@ -72,7 +72,7 @@
         <h1 style="color: #fff; margin: 0 0 5px 0;">{{ collection.title }}</h1>
         <p style="color: #a5b4fc; margin: 0;">by {{ collection.created_by }}</p>
       </div>
-      {% if user == collection.created_by %}
+      {% if user.profile.role == 'librarian' %}
         <div style="display: flex; gap: 10px;">
           <a href="{% url 'edit_collection' collection.id %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
             ✏️ Edit

@@ -151,7 +151,7 @@ def item_detail(request, pk):
 
 def edit_item(request, pk):
     item = get_object_or_404(Item, pk=pk)
-    if request.user != item.created_by:
+    if request.user.profile.role != 'librarian':
         messages.error(request, "❌ You do not have permission to edit this item.")
         return redirect("view_items")
 
@@ -165,7 +165,7 @@ def edit_item(request, pk):
 
 def delete_item(request, pk):
     item = get_object_or_404(Item, pk=pk)
-    if request.user != item.created_by:
+    if request.user.profile.role != 'librarian':
         messages.error(request, "❌ You do not have permission to delete this item.")
         return redirect("view_items")
 
@@ -405,7 +405,7 @@ def collection_detail(request, pk):
 
 def edit_collection(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
-    if request.user != collection.created_by:
+    if request.user.profile.role != 'librarian':
         messages.error(request, "❌ You do not have permission to edit this collection.")
         return redirect("view_collections")
 
@@ -422,7 +422,7 @@ def edit_collection(request, pk):
 
 def delete_collection(request, pk):
     collection = get_object_or_404(Collection, pk=pk)
-    if request.user != collection.created_by:
+    if request.user.profile.role != 'librarian':
         messages.error(request, "❌ You do not have permission to delete this collection.")
         return redirect("view_collections")
 
