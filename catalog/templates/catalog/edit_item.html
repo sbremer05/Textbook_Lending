@@ -3,103 +3,118 @@
 {% block title %}Edit Item{% endblock %}
 
 {% block content %}
-<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
-  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
-    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">Edit Item</h1>
+    <div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+        <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+            <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">Edit Item</h1>
 
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      
-      <div style="display: grid; gap: 20px;">
-        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <label for="{{ form.title.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Title</label>
-          {{ form.title }}
-        </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <label for="{{ form.author.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Author</label>
-          {{ form.author }}
-        </div>
+                <div style="display: grid; gap: 20px;">
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <label for="{{ form.title.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Title</label>
+                        {{ form.title }}
+                    </div>
 
-        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <label for="{{ form.location.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Location</label>
-          {{ form.location }}
-        </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <label for="{{ form.author.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Author</label>
+                        {{ form.author }}
+                    </div>
 
-        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <label for="{{ form.description.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Description</label>
-          {{ form.description }}
-        </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <label for="{{ form.location.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Location</label>
+                        {{ form.location }}
+                    </div>
 
-        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <label style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Collections</label>
-          <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
-            <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-              <input type="text" class="checkbox-search" placeholder="Search collections..." id="collection-search" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
-              <div class="checkbox-count" id="collection-count" style="color: #a5b4fc; margin-top: 10px;">
-                Showing {{ form.collections.field.queryset.count }} collections
-              </div>
-            </div>
-            <div class="no-results" id="collection-no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
-              No matching collections found
-            </div>
-            <div class="checkbox-options" id="collection-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
-              {% for checkbox in form.collections %}
-                <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}" style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                  <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
-                    {{ checkbox.tag }}
-                    <span>{{ checkbox.choice_label }}</span>
-                  </label>
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <label for="{{ form.description.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <label style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Collections</label>
+                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
+                            <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                <input
+                                        type="text"
+                                        class="checkbox-search"
+                                        placeholder="Search collections..."
+                                        id="collection-search"
+                                        style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;"
+                                >
+                                <div class="checkbox-count" id="collection-count" style="color: #a5b4fc; margin-top: 10px;">
+                                    Showing {{ form.collections.field.queryset.count }} collections
+                                </div>
+                            </div>
+                            <div class="no-results" id="collection-no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
+                                No matching collections found
+                            </div>
+                            <div class="checkbox-options" id="collection-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
+                                {% for checkbox in form.collections %}
+                                    <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}" style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                        <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
+                                            {{ checkbox.tag }}
+                                            <span>{{ checkbox.choice_label }}</span>
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <label for="{{ form.image.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Image</label>
+                        {{ form.image }}
+                    </div>
                 </div>
-              {% endfor %}
-            </div>
-          </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button
+                            type="submit"
+                            style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;"
+                    >
+                        Save Changes
+                    </button>
+                    <a
+                            href="{% url 'item_detail' item.pk %}"
+                            style="flex: 1; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center; transition: all 0.3s;"
+                    >
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-          <label for="{{ form.image.id_for_label }}" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Image</label>
-          {{ form.image }}
-        </div>
-      </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('collection-search');
+            const items       = document.querySelectorAll('#collection-options .checkbox-item');
+            const noResults   = document.getElementById('collection-no-results');
+            const countEl     = document.getElementById('collection-count');
+            const total       = items.length;
 
-      <div style="display: flex; gap: 15px; margin-top: 30px;">
-        <button type="submit" style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;">
-          Save Changes
-        </button>
-        <a href="{% url 'item_detail' item.pk %}" style="flex: 1; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center; transition: all 0.3s;">
-          Cancel
-        </a>
-      </div>
-    </form>
-  </div>
-</div>
+            function updateCount(n) {
+                countEl.textContent = `Showing ${n} of ${total} collections`;
+            }
+            updateCount(total);
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('collection-search');
-    const checkboxes = document.querySelectorAll('#collection-options .checkbox-item');
-    const noResults = document.getElementById('collection-no-results');
-    const checkboxCount = document.getElementById('collection-count');
-    const totalItems = checkboxes.length;
+            searchInput.addEventListener('input', function() {
+                const term = this.value.trim().toLowerCase();
+                let visible = 0;
 
-    function updateVisibleCount(visible) {
-      checkboxCount.textContent = `Showing ${visible} of ${totalItems} collections`;
-    }
-    updateVisibleCount(totalItems);
+                items.forEach(item => {
+                    if (item.dataset.search.includes(term)) {
+                        item.style.display = '';
+                        visible++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
 
-    searchInput.addEventListener('input', function(e) {
-      const searchTerm = e.target.value.toLowerCase();
-      let visibleCount = 0;
-
-      checkboxes.forEach(item => {
-        const matches = item.dataset.search.includes(searchTerm);
-        item.classList.toggle('hidden', !matches);
-        if (matches) visibleCount++;
-      });
-
-      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-      updateVisibleCount(visibleCount);
-    });
-  });
-</script>
+                noResults.style.display = visible === 0 ? 'block' : 'none';
+                updateCount(visible);
+            });
+        });
+    </script>
 {% endblock %}

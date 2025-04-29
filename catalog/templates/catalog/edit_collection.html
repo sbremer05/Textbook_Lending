@@ -5,125 +5,120 @@
 {% block extra_styles %}
     <style>
         /* Form container */
-        .add-collection-container {
-            max-width: 700px;
-            margin: 60px auto;
-            background: #fff;
-            padding: 30px 40px;
+        .edit-collection-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            color: #2c3e50;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
         }
-        .add-collection-container h1 {
+        .edit-collection-container h1 {
             font-size: 1.8rem;
-            margin-bottom: 24px;
-            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
         }
 
         /* Basic field styles */
-        .add-collection-container input[type="text"],
-        .add-collection-container textarea,
-        .add-collection-container input[type="checkbox"] {
+        .edit-collection-container input[type="text"],
+        .edit-collection-container textarea {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px;
             margin-bottom: 20px;
-            border: 1px solid #dcdfe6;
-            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
             font-size: 0.95rem;
-            background: #f9fafe;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .add-collection-container textarea {
+        .edit-collection-container textarea {
             resize: vertical;
             min-height: 100px;
         }
-        .add-collection-container input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-        }
-        .add-collection-container input:focus,
-        .add-collection-container textarea:focus {
+        .edit-collection-container input:focus,
+        .edit-collection-container textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
-            background: #fff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
         }
 
         /* Checkbox sections */
-        .access-control-section {
-            margin: 25px 0;
+        .section-container {
+            background: rgba(255, 255, 255, 0.05);
             padding: 20px;
-            background: #f8f9fa;
             border-radius: 8px;
-            border: 1px solid #eee;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
         }
-        .checkbox-section-title {
+        .section-title {
             font-weight: 600;
             margin-bottom: 15px;
-            color: #2c3e50;
+            color: white;
         }
 
         /* Searchable checkboxes */
-        .checkbox-list {
-            margin-bottom: 20px;
-        }
         .checkbox-container {
-            border: 1px solid #eee;
-            border-radius: 6px;
-            background: #f9fafe;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
         }
         .checkbox-search-container {
             position: sticky;
             top: 0;
-            background: #f9fafe;
-            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
             z-index: 1;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .checkbox-search {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
             font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
         }
         .checkbox-search:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
         }
         .checkbox-options {
             max-height: 200px;
             overflow-y: auto;
-            padding: 0 10px;
+            padding: 0 15px;
         }
         .checkbox-item {
             display: flex;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .checkbox-item:last-child {
             border-bottom: none;
         }
         .checkbox-item:hover {
-            background: rgba(52, 152, 219, 0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
         .checkbox-item input[type="checkbox"] {
             margin-right: 12px;
             width: auto;
-            accent-color: #3498db;
+            accent-color: #6366f1;
         }
         .checkbox-count {
             font-size: 0.85rem;
-            color: #7f8c8d;
-            margin: 8px 0 5px;
-            padding: 0 2px;
+            color: #a5b4fc;
+            margin: 10px 0;
+            padding: 0 5px;
         }
         .no-results {
             padding: 20px;
-            color: #7f8c8d;
+            color: #a5b4fc;
             font-style: italic;
             text-align: center;
             display: none;
@@ -131,191 +126,168 @@
         .checkbox-item.hidden {
             display: none;
         }
-
-        /* User display styling */
-        .user-display {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .username {
-            font-weight: 500;
-        }
         .user-email {
-            color: #7f8c8d;
+            color: #a5b4fc;
             font-size: 0.85rem;
-            margin-left: 5px;
-        }
-        .checkbox-item label {
-            display: flex;
-            align-items: center;
+            margin-left: 8px;
         }
 
-        /* Submit button */
-        .add-collection-container button.save-btn {
-            align-self: flex-start;
+        /* Button styles */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        .btn {
             padding: 12px 24px;
-            background: #3498db;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .add-collection-container button.save-btn:hover {
-            background: #2980b9;
-        }
-        .add-collection-container button.save-btn:active {
-            transform: translateY(1px);
-        }
-
-        /* Cancel link */
-        .add-collection-container a.cancel-link {
-            display: inline-block;
-            margin-top: 24px;
-            font-size: 0.95rem;
-            color: #3498db;
+            transition: all 0.3s;
             text-decoration: none;
-            font-weight: 600;
+            text-align: center;
         }
-        .add-collection-container a.cancel-link:hover {
-            text-decoration: underline;
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 {% endblock %}
 
 {% block content %}
-<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
-  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
-    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">✏️ Edit Collection</h1>
+    <div class="edit-collection-container">
+        <h1>✏️ Edit Collection</h1>
 
-    <form method="post" style="display: flex; flex-direction: column; gap: 20px;">
-      {% csrf_token %}
-      
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <label for="title" style="color: #a5b4fc; font-size: 0.9em;">Title</label>
-        <input type="text" name="title" id="title" value="{{ collection.title }}" required 
-               style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 8px; width: 100%;">
-      </div>
+        <form method="post">
+            {% csrf_token %}
 
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <label for="description" style="color: #a5b4fc; font-size: 0.9em;">Description</label>
-        <textarea name="description" id="description" rows="4" required
-                  style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 8px; width: 100%; resize: vertical;">{{ collection.description }}</textarea>
-      </div>
+            <!-- Basic Collection Info -->
+            <div class="section-container">
+                <label for="title" style="color: #a5b4fc; font-size: 0.9em; display: block; margin-bottom: 8px;">Title</label>
+                <input type="text" name="title" id="title" value="{{ collection.title }}" required>
 
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <input type="checkbox" name="is_public" id="is_public" {% if collection.is_public %}checked{% endif %}
-               style="accent-color: #6366f1;">
-        <label for="is_public" style="color: #a5b4fc; font-size: 0.9em;">Make this collection public</label>
-      </div>
+                <label for="description" style="color: #a5b4fc; font-size: 0.9em; display: block; margin-bottom: 8px;">Description</label>
+                <textarea name="description" id="description" rows="4" required>{{ collection.description }}</textarea>
 
-      <!-- Access Control Section -->
-      <div id="access-control" style="display: none; background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-        <h3 style="color: #fff; margin-bottom: 15px;">Grant Access to Users</h3>
-        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
-          <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <input type="text" class="checkbox-search" placeholder="Search users by name or email..." 
-                   style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
-            <div class="checkbox-count" style="color: #a5b4fc; margin-top: 10px;">
-              Showing {{ form.allowed_users.field.queryset.count }} users
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 15px;">
+                    <input type="checkbox" name="is_public" id="is_public" {% if collection.is_public %}checked{% endif %}>
+                    <label for="is_public" style="color: #a5b4fc; font-size: 0.9em;">Public</label>
+                </div>
             </div>
-          </div>
-          <div class="no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
-            No matching users found
-          </div>
-          <div class="checkbox-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
-            {% for checkbox in form.allowed_users %}
-              <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}" 
-                   style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
-                  {{ checkbox.tag }}
-                  <span>{{ checkbox.choice_label }}</span>
-                </label>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
 
-      <!-- Items Section -->
-      <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
-        <h3 style="color: #fff; margin-bottom: 15px;">Add Books to Collection</h3>
-        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);">
-          <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <input type="text" class="checkbox-search" placeholder="Search books..." 
-                   style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff;">
-            <div class="checkbox-count" style="color: #a5b4fc; margin-top: 10px;">
-              Showing {{ form.items.field.queryset.count }} books
+            <!-- Conditional Access Control Section -->
+            <div id="access-control" class="section-container" style="display: {% if collection.is_public %}none{% else %}block{% endif %};">
+                <h3 class="section-title">Grant Access to Users</h3>
+                <div class="checkbox-container">
+                    <div class="checkbox-search-container">
+                        <input type="text" class="checkbox-search" id="user-search" placeholder="Search users by name or email...">
+                        <div class="checkbox-count" id="user-count">
+                            Showing {{ form.allowed_users.field.queryset.count }} users
+                        </div>
+                    </div>
+                    <div class="no-results" id="user-no-results">No matching users found</div>
+                    <div class="checkbox-options" id="user-options">
+                        {% for checkbox in form.allowed_users %}
+                            <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }} {{ checkbox.choice_label.user.email|lower }}">
+                                {{ checkbox.tag }}
+                                <label for="{{ checkbox.id_for_label }}">
+                                    {{ checkbox.choice_label }}
+                                    <span class="user-email">({{ checkbox.choice_label.user.email }})</span>
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="no-results" style="padding: 20px; color: #a5b4fc; text-align: center; display: none;">
-            No matching books found
-          </div>
-          <div class="checkbox-options" style="max-height: 200px; overflow-y: auto; padding: 15px;">
-            {% for checkbox in form.items %}
-              <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}" 
-                   style="padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
-                  {{ checkbox.tag }}
-                  <span>{{ checkbox.choice_label }}</span>
-                </label>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
 
-      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-        <a href="{% url 'view_collections' %}" 
-           style="padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
-          Cancel
-        </a>
-        <button type="submit" 
-                style="padding: 12px 24px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-          Save Changes
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+            <!-- Items Section -->
+{#            <div class="section-container">#}
+{#                <h3 class="section-title">Books in Collection</h3>#}
+{#                <div class="checkbox-container">#}
+{#                    <div class="checkbox-search-container">#}
+{#                        <input type="text" class="checkbox-search" id="item-search" placeholder="Search books...">#}
+{#                        <div class="checkbox-count" id="item-count">#}
+{#                            Showing {{ form.items.field.queryset.count }} books#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <div class="no-results" id="item-no-results">No matching books found</div>#}
+{#                    <div class="checkbox-options" id="item-options">#}
+{#                        {% for checkbox in form.items %}#}
+{#                            <div class="checkbox-item" data-search="{{ checkbox.choice_label|lower }}">#}
+{#                                {{ checkbox.tag }}#}
+{#                                <label for="{{ checkbox.id_for_label }}">#}
+{#                                    {{ checkbox.choice_label }}#}
+{#                                </label>#}
+{#                            </div>#}
+{#                        {% endfor %}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Toggle user access control
-    const isPublic = document.querySelector('#is_public');
-    const accessCtl = document.querySelector('#access-control');
-    function toggle() {
-      accessCtl.style.display = isPublic.checked ? 'none' : 'block';
-    }
-    isPublic.addEventListener('change', toggle);
-    toggle();
+            <div class="button-group">
+                <a href="{% url 'view_collections' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
 
-    // Search setup
-    function setupSearch(inputCls, optsCls, cntCls, noCls) {
-      const input = document.querySelector(`.${inputCls}`);
-      const items = document.querySelectorAll(`.${optsCls} .checkbox-item`);
-      const noRes = document.querySelector(`.${noCls}`);
-      const count = document.querySelector(`.${cntCls}`);
-      const total = items.length;
-      function upd(v) { count.textContent = `Showing ${v} of ${total}`; }
-      upd(total);
-      input.addEventListener('input', e => {
-        const term = e.target.value.toLowerCase();
-        let vis = 0;
-        items.forEach(i => {
-          const ok = i.dataset.search.includes(term);
-          i.classList.toggle('hidden', !ok);
-          if (ok) vis++;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle user access control based on public/private selection
+            const isPublicCheckbox = document.querySelector('#is_public');
+            const accessControlSection = document.querySelector('#access-control');
+
+            function toggleAccessControl() {
+                accessControlSection.style.display = isPublicCheckbox.checked ? 'none' : 'block';
+            }
+
+            // Initial state
+            toggleAccessControl();
+
+            // Add event listener
+            isPublicCheckbox.addEventListener('change', toggleAccessControl);
+
+            // Search functionality setup
+            function setupSearch(inputId, optionsId, countId, noResultsId) {
+                const searchInput = document.getElementById(inputId);
+                const checkboxes = document.querySelectorAll(`#${optionsId} .checkbox-item`);
+                const noResults = document.getElementById(noResultsId);
+                const countElement = document.getElementById(countId);
+                const totalItems = checkboxes.length;
+
+                function updateVisibleCount(visible) {
+                    countElement.textContent = `Showing ${visible} of ${totalItems}`;
+                }
+                updateVisibleCount(totalItems);
+
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    let visibleCount = 0;
+
+                    checkboxes.forEach(item => {
+                        const matches = item.dataset.search.includes(searchTerm);
+                        item.classList.toggle('hidden', !matches);
+                        if (matches) visibleCount++;
+                    });
+
+                    noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+                    updateVisibleCount(visibleCount);
+                });
+            }
+
+            // Initialize search for both users and items
+            setupSearch('user-search', 'user-options', 'user-count', 'user-no-results');
+            setupSearch('item-search', 'item-options', 'item-count', 'item-no-results');
         });
-        noRes.style.display = vis === 0 ? 'block' : 'none';
-        upd(vis);
-      });
-    }
-    setupSearch('users-search','users-options','users-count','users-no-results');
-    setupSearch('items-search','items-options','items-count','items-no-results');
-  });
-</script>
+    </script>
 {% endblock %}
