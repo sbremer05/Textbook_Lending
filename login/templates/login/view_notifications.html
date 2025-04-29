@@ -22,9 +22,13 @@
   {% endfor %}
 </ul>
 
-<a href="{% url 'home' %}" class="btn btn-primary mt-3">Back to Home</a>
+    <a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s; margin-top: 20px;">
+        ← Back to Dashboard
+    </a>
 {%else%}
     <p>{{ error_message }}</p>
-    <p><a href="{% url 'home' %}">Go back to home</a></p>
+    <p><a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+        ← Back to Dashboard
+    </a></p>
     {% endif %}
 {% endblock %}
