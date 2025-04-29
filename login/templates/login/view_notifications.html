@@ -1,34 +1,118 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block extra_styles %}
+    <style>
+        /* Outer dashboard container */
+        .dashboard-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+        }
+        .inner-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1.notifications-title {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Grid for individual notification cards */
+        .notifications-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .notification-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            position: relative;
+        }
+        .notification-card.unread {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .notification-card a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .notification-card a:hover {
+            text-decoration: underline;
+        }
+
+        .notification-meta {
+            font-size: 0.85em;
+            color: #c7d2fe;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-<h2>Notifications</h2>
+    <div class="dashboard-container">
+        <div class="inner-card">
+            <h1 class="notifications-title">🔔 Your Notifications</h1>
 
-{% if user.is_authenticated %}
-<ul class="list-group">
-  {% for notification in notifications %}
-    <li class="list-group-item {% if not notification.is_read %}list-group-item-info{% endif %}">
-      {% if notification.url %}
-        <a href="{{ notification.url }}" class="text-primary text-decoration-underline">
-          {{ notification.message }}
-        </a>
-      {% else %}
-        {{ notification.message }}
-      {% endif %}
-      <br>
-      <small class="text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
-    </li>
-  {% empty %}
-    <li class="list-group-item">No notifications yet.</li>
-  {% endfor %}
-</ul>
+            {% if user.is_authenticated %}
+                <div class="notifications-grid">
+                    {% for notification in notifications %}
+                        <div class="notification-card {% if not notification.is_read %}unread{% endif %}">
+                            {% if notification.url %}
+                                <a href="{{ notification.url }}">
+                                    {{ notification.message }}
+                                </a>
+                            {% else %}
+                                <span>{{ notification.message }}</span>
+                            {% endif %}
+                            <div class="notification-meta">
+                                {{ notification.created_at|date:"M d, Y H:i" }}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="notification-card">
+                            <span>No notifications yet.</span>
+                        </div>
+                    {% endfor %}
+                </div>
 
-    <a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s; margin-top: 20px;">
-        ← Back to Dashboard
-    </a>
-{%else%}
-    <p>{{ error_message }}</p>
-    <p><a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
-        ← Back to Dashboard
-    </a></p>
-    {% endif %}
+                <div style="text-align: center;">
+                    <a href="{% url 'home' %}" class="back-button">
+                        ← Back to Dashboard
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-center text-warning">{{ error_message }}</p>
+                <div style="text-align: center;">
+                    <a href="{% url 'home' %}" class="back-button">
+                        ← Back to Dashboard
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
