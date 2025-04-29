@@ -1,14 +1,70 @@
 {% extends 'base.html' %}
 
 {% block extra_styles %}
+    <style>
+        /* Search form container */
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Text input styling */
+        .search-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            border-color: var(--primary-light);
+        }
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Submit button styling */
+        .search-button {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 8px;
+            padding: 0 1.5rem;
+            color: white;
+            font-weight: 500;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .search-button:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     {% block opening %}{% endblock %}
+
     <!-- Search bar section -->
-    <form method="get" action="{% block search_action_url %}{% endblock %}" class="d-flex mb-4">
-        <input class="form-control me-2" type="search" name="q" placeholder="Search..." value="{{ request.GET.q }}">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
+    <form
+            method="get"
+            action="{% block search_action_url %}{% endblock %}"
+            class="search-form"
+    >
+        <input
+                type="search"
+                name="q"
+                value="{{ request.GET.q|default:'' }}"
+                class="search-input"
+                placeholder="Search..."
+        >
+        <button type="submit" class="search-button">
+            🔍 Search
+        </button>
     </form>
 
     {% block search_results %}
