@@ -32,7 +32,7 @@ class CollectionAccessRequest(models.Model):
 class Item(models.Model):
     STATUS_CHOICES = [
         ('available', 'Available'),
-        # ('checked_out', 'Checked Out'),
+        ('checked_out', 'Checked Out'),
         ('repair', 'Being Repaired'),
         ('lost', 'Lost'),
     ]
