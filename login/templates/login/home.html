@@ -32,7 +32,7 @@
       </div>
       <h3 class="mb-3">Dashboard</h3>
       <div class="list-group mb-4">
-        <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse & Add Books</a>
+        <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Available Books</a>
         <a href="{% url 'my_borrowed_items' %}" class="list-group-item list-group-item-action">📖 View Borrowed Books</a>
         <a href="{% url 'view_borrow_requests' %}" class="list-group-item list-group-item-action">📥 Manage Borrow Requests</a>
         <a href="{% url 'view_collections' %}" class="list-group-item list-group-item-action">📂 Manage Collections</a>
@@ -59,7 +59,7 @@
       </div>
       <h3 class="mb-3">Dashboard</h3>
       <div class="list-group mb-4">
-        <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Books</a>
+        <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Available Books</a>
         <a href="{% url 'my_borrowed_items' %}" class="list-group-item list-group-item-action">📖 View Borrowed Books</a>
         <a href="{% url 'notifications' %}" class="list-group-item list-group-item-action">
           🔔 Notifications
@@ -91,11 +91,11 @@
     <div class="card mb-4 shadow-sm">
       <div class="card-body text-center">
         <h2 class="card-title">Guest View</h2>
-        <p class="card-text">Welcome, guest! You can browse books and access some basic features.</p>
+        <p class="card-text">Welcome, guest! You can browse available books and access some basic features.</p>
       </div>
     </div>
     <div class="list-group mb-4">
-      <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Books</a>
+      <a href="{% url 'view_items' %}" class="list-group-item list-group-item-action">📚 Browse Available Books</a>
       <a href="{% url 'view_collections' %}" class="list-group-item list-group-item-action">📂 Browse Collections</a>
       <a href="#" class="list-group-item list-group-item-action disabled">📖 View Borrowed Books (Login required)</a>
       <a href="#" class="list-group-item list-group-item-action disabled">📥 Request a Book (Login required)</a>
