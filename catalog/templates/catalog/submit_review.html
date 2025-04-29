@@ -9,51 +9,73 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 600px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-    <h2 style="color: #2c3e50;">
+<div class="dashboard-container" style="max-width: 600px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">
       {% if review %}
-        📝 Edit Your Review for "{{ item.title }}"
+        📝 Edit Your Review
       {% else %}
-        ⭐ Leave a Review for "{{ item.title }}"
+        ⭐ Leave a Review
       {% endif %}
-    </h2>
+    </h1>
+
+    <p style="color: #a5b4fc; text-align: center; margin-bottom: 30px; font-size: 1.1em;">
+      {% if review %}
+        Editing review for "{{ item.title }}"
+      {% else %}
+        Reviewing "{{ item.title }}"
+      {% endif %}
+    </p>
 
     {% if user.is_authenticated and has_borrowed %}
-        <form method="post">
-            {% csrf_token %}
+      <form method="post">
+        {% csrf_token %}
+        
+        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px;">
+          <label for="rating" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Rating:</label>
+          <select name="rating" id="rating" required style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; margin-bottom: 5px;">
+            <option value="">Choose a rating</option>
+            <option value="5" {% if review and review.rating == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐ – Amazing</option>
+            <option value="4" {% if review and review.rating == 4 %}selected{% endif %}>⭐⭐⭐⭐ – Great</option>
+            <option value="3" {% if review and review.rating == 3 %}selected{% endif %}>⭐⭐⭐ – Good</option>
+            <option value="2" {% if review and review.rating == 2 %}selected{% endif %}>⭐⭐ – Okay</option>
+            <option value="1" {% if review and review.rating == 1 %}selected{% endif %}>⭐ – Poor</option>
+          </select>
+        </div>
 
-            <label for="rating" style="display: block; margin-top: 20px; font-weight: bold;">Rating:</label>
-            <select name="rating" id="rating" required style="width: 100%; padding: 8px; margin-top: 5px;">
-                <option value="">Choose a rating</option>
-                <option value="5" {% if review and review.rating == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐ – Amazing</option>
-                <option value="4" {% if review and review.rating == 4 %}selected{% endif %}>⭐⭐⭐⭐ – Great</option>
-                <option value="3" {% if review and review.rating == 3 %}selected{% endif %}>⭐⭐⭐ – Good</option>
-                <option value="2" {% if review and review.rating == 2 %}selected{% endif %}>⭐⭐ – Okay</option>
-                <option value="1" {% if review and review.rating == 1 %}selected{% endif %}>⭐ – Poor</option>
-            </select>
+        <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 20px;">
+          <label for="comment" style="display: block; color: #fff; margin-bottom: 10px; font-weight: 600;">Comment (optional):</label>
+          <textarea name="comment" id="comment" rows="5" placeholder="Share your thoughts..." style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; resize: vertical;">{% if review %}{{ review.comment }}{% endif %}</textarea>
+          <p style="color: #a5b4fc; font-size: 0.9em; margin-top: 10px;">
+            Your review will be visible to other users.
+            Please be respectful and constructive.
+          </p>
+        </div>
 
-            <label for="comment" style="display: block; margin-top: 20px; font-weight: bold;">Comment (optional):</label>
-            <textarea name="comment" id="comment" rows="5" placeholder="Share your thoughts..." style="width: 100%; padding: 10px; margin-top: 5px; resize: vertical;">{% if review %}{{ review.comment }}{% endif %}</textarea>
-            <p style="color: #7f8c8d; font-size: 0.9em; margin-top: 10px;">
-                Your review will be visible to other users.
-                Please be respectful and constructive.
-                Inappropriate content may be removed.
-            </p>
-
-            <button type="submit" style="margin-top: 20px; padding: 10px 20px; background-color: #f1c40f; color: #2c3e50; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-                {% if review %}📝 Update Review{% else %}⭐ Submit Review{% endif %}
-            </button>
-        </form>
+        <div style="display: flex; gap: 15px;">
+          <button type="submit" style="flex: 1; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: transform 0.2s;">
+            {% if review %}📝 Update Review{% else %}⭐ Submit Review{% endif %}
+          </button>
+          <a href="{% url 'my_borrowed_items' %}" style="flex: 1; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); text-align: center; transition: all 0.3s;">
+            Cancel
+          </a>
+        </div>
+      </form>
     {% elif not user.is_authenticated %}
-      <p>{{ error_message }}</p>
-      <p><a href = "{% url 'home' %}">Go back to home</a></p>
+      <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2); text-align: center;">
+        <p style="color: #ef4444; margin: 0;">{{ error_message }}</p>
+        <a href="{% url 'home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); margin-top: 15px; transition: all 0.3s;">
+          Go back to home
+        </a>
+      </div>
     {% else %}
-        <p>You can only review books you're currently borrowing.</p>
+      <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); text-align: center;">
+        <p style="color: #f59e0b; margin: 0;">You can only review books you're currently borrowing.</p>
+        <a href="{% url 'my_borrowed_items' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); margin-top: 15px; transition: all 0.3s;">
+          View My Borrowed Items
+        </a>
+      </div>
     {% endif %}
-    {% if user.is_authenticated %}
-        <p style="margin-top: 20px;">
-            <a href="{% url 'my_borrowed_items' %}" style="color: #3498db; text-decoration: none;">← Back to My Borrowed Items</a>
-        </p>
-    {% endif %}
+  </div>
 </div>
 {% endblock %}

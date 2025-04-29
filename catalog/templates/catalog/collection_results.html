@@ -2,31 +2,58 @@
 
 {% block title %}Search Collections{% endblock %}
 
+{% block extra_styles %}
+    <style>
+        .public-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+        .private-badge {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.9em;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<div class="container" style="max-width: 800px; margin: 50px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-  <h2 style="color: #2c3e50;">Search Results for "{{ query }}"</h2>
+<div class="dashboard-container" style="max-width: 800px; margin: 50px auto; padding: 30px;">
+  <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 30px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
+    <h1 style="color: #fff; text-align: center; margin-bottom: 30px;">🔍 Search Results</h1>
+    <p style="color: #a5b4fc; text-align: center; margin-bottom: 30px;">Results for "{{ query }}"</p>
 
-  {% if results %}
-    <ul style="list-style: none; padding: 0;">
-      {% for collection in results %}
-        <li style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #ecf0f1;">
-          <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: #3498db; font-weight: bold; transition: color 0.3s ease;">
-            {{ collection.title }}
-          </a>
-          <span class="label" style="font-size: 0.9em; color: #7f8c8d; margin-left: 8px;">
-            {% if collection.is_public %}
-              (Public)
-            {% else %}
-              (Private)
-            {% endif %}
-          </span>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p style="color: #7f8c8d;">No collections matched your search.</p>
-  {% endif %}
+    {% if results %}
+      <div style="display: grid; gap: 15px;">
+        {% for collection in results %}
+          <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="color: #fff; margin: 0 0 5px 0;">{{ collection.title }}</h3>
+                <span class="{% if collection.is_public %}public-badge{% else %}private-badge{% endif %}">
+                  {% if collection.is_public %}Public{% else %}Private{% endif %}
+                </span>
+              </div>
+            </div>
+            <a href="{% url 'collection_detail' collection.id %}" style="display: block; margin-top: 15px; padding: 8px 16px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; text-align: center; transition: all 0.3s;">
+              View Collection →
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: #a5b4fc; text-align: center;">No collections matched your search.</p>
+    {% endif %}
+  </div>
 
-  <a href="{% url 'search_home' %}" class="back-link" style="display: inline-block; margin-top: 20px; color: #3498db; text-decoration: none; font-weight: bold;">← Back to Search</a>
+  <div style="text-align: center;">
+    <a href="{% url 'search_home' %}" style="display: inline-block; padding: 12px 24px; background: rgba(255, 255, 255, 0.1); color: #fff; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+      ← Back to Search
+    </a>
+  </div>
 </div>
 {% endblock %}

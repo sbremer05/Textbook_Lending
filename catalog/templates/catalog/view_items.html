@@ -3,44 +3,45 @@
 {% block title %}📚 View Items{% endblock %}
 
 {% block opening %}
-    <h1 class="text-center text-primary mb-4">📚 View Items</h1>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #fff; font-size: 2.5rem; margin-bottom: 20px;">📚 View Items</h1>
+        {% if user.profile.role == "librarian" %}
+            <a href="{% url 'add_item' %}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s;">
+                ➕ Add New Book
+            </a>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block search_results %}
-    {% if user.profile.role == "librarian" %}
-        <div class="text-center mb-4">
-            <a href="{% url 'add_item' %}" class="btn btn-success btn-lg">
-                ➕ Add New Book
-            </a>
-        </div>
-    {% endif %}
-
     {% if items %}
-        <div class="list-group">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px;">
             {% for item in items %}
-                <a href="{% url 'item_detail' item.pk %}" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between align-items-center">
-                        <h5 class="mb-1">{{ item.title }}</h5>
-                        <small class="text-muted">Status: {{ item.get_status_display }}</small>
-                    </div>
-                    <p class="mb-1">Location: {{ item.location }}</p>
-                    {% if item.image %}
-                        <img src="{{ item.image.url }}" alt="{{ item.title }} cover" class="img-fluid rounded" style="max-width: 150px;">
-                    {% else %}
-                        <p class="text-muted">No cover available</p>
-                    {% endif %}
-                </a>
+                <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 12px; padding: 20px; border: 1px solid rgba(255, 255, 255, 0.2); transition: transform 0.2s;">
+                    <a href="{% url 'item_detail' item.pk %}" style="text-decoration: none; color: inherit;">
+                        <div style="margin-bottom: 15px;">
+                            <h3 style="color: #fff; margin: 0 0 10px 0; font-size: 1.2rem;">{{ item.title }}</h3>
+                            <p style="color: #a5b4fc; margin: 0 0 5px 0;">Location: {{ item.location }}</p>
+                            <span style="display: inline-block; padding: 4px 8px; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border-radius: 4px; font-size: 0.9rem;">
+                                Status: {{ item.get_status_display }}
+                            </span>
+                        </div>
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.title }} cover" style="width: 100%; max-width: 150px; border-radius: 8px; margin-top: 10px;">
+                        {% else %}
+                            <p style="color: #a5b4fc; font-style: italic; margin: 10px 0 0 0;">No cover available</p>
+                        {% endif %}
+                    </a>
+                </div>
             {% endfor %}
         </div>
     {% else %}
-        <p class="text-center text-muted fs-5">No items found.</p>
+        <p style="text-align: center; color: #a5b4fc; font-size: 1.1rem; padding: 20px;">No items found.</p>
     {% endif %}
 
-    <div class="text-center mt-4">
-        {% if user.profile.role == "librarian" %}
-            <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-        {% else %}
-            <a href="{% url 'home' %}" class="btn btn-outline-primary">← Back to Dashboard</a>
-        {% endif %}
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'home' %}" style="display: inline-block; padding: 10px 20px; background: rgba(255, 255, 255, 0.1); color: #a5b4fc; text-decoration: none; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.3s;">
+            ← Back to Dashboard
+        </a>
     </div>
 {% endblock %}
