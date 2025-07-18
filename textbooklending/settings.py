@@ -26,13 +26,13 @@ load_dotenv(".env")
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-70dp93*)ixi37pnj^gu+*#&k8&qix1oz!e^$g6jl3wksuh%6&s'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True" #True
 # DEBUG = True
 
-ALLOWED_HOSTS = ['https://textbook-lending-95d5b6201c78.herokuapp.com/', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['textbook-lending-95d5b6201c78.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
