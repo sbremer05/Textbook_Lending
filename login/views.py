@@ -11,23 +11,50 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.http import HttpResponse
 
-# Home view (Debugging included)
-def home(request):
-    if request.user.is_authenticated:
-        profile, created = Profile.objects.get_or_create(user=request.user)
-        if created or not profile.is_setup:
-            profile.role = "patron"  # Default role
-            profile.is_setup = True
-            profile.save()
-        unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
-        context = {"user": request.user, "role": profile.role, "is_authenticated": True, "unread_notifications_count": unread_notifications_count}
-    else:
-        context = {"is_authenticated": False}
-    return render(request, "login/home.html", context)
+# # Home view (Debugging included)
+# def home(request):
+#     if request.user.is_authenticated:
+#         profile, created = Profile.objects.get_or_create(user=request.user)
+#         if created or not profile.is_setup:
+#             profile.role = "patron"  # Default role
+#             profile.is_setup = True
+#             profile.save()
+#         unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
+#         context = {"user": request.user, "role": profile.role, "is_authenticated": True, "unread_notifications_count": unread_notifications_count}
+#     else:
+#         context = {"is_authenticated": False}
+#     return render(request, "login/home.html", context)
+#
+# def test(request):
+#     return HttpResponse("hi")
 
-def test(request):
-    return HttpResponse("hi")
-    
+import logging
+
+logger = logging.getLogger(__name__)
+
+def home(request):
+    try:
+        if request.user.is_authenticated:
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            if created or not profile.is_setup:
+                profile.role = "patron"  # Default role
+                profile.is_setup = True
+                profile.save()
+            unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
+            context = {
+                "user": request.user,
+                "role": profile.role,
+                "is_authenticated": True,
+                "unread_notifications_count": unread_notifications_count
+            }
+        else:
+            context = {"is_authenticated": False}
+        return render(request, "login/home.html", context)
+    except Exception as e:
+        logger.error(f"Home view error: {e}", exc_info=True)
+        # Optional: return HttpResponse with error details (only temporarily for debugging)
+        return HttpResponse(f"Error in home view: {e}", status=500)
+
 
 # Logout view
 def logout_view(request):
