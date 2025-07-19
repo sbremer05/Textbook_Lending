@@ -9,6 +9,7 @@ from .forms import ProfilePictureForm
 from .decorators import role_required
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.http import HttpResponse
 
 # Home view (Debugging included)
 def home(request):
@@ -24,7 +25,8 @@ def home(request):
         context = {"is_authenticated": False}
     return render(request, "login/home.html", context)
 
-
+def test(request):
+    return HttpResponse("hi")
     
 
 # Logout view
