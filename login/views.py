@@ -32,12 +32,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import traceback
+
 def home(request):
     try:
         if request.user.is_authenticated:
             profile, created = Profile.objects.get_or_create(user=request.user)
             if created or not profile.is_setup:
-                profile.role = "patron"  # Default role
+                profile.role = "patron"
                 profile.is_setup = True
                 profile.save()
             unread_notifications_count = Notification.objects.filter(user=request.user, is_read=False).count()
@@ -50,10 +52,12 @@ def home(request):
         else:
             context = {"is_authenticated": False}
         return render(request, "login/home.html", context)
-    except Exception as e:
-        logger.error(f"Home view error: {e}", exc_info=True)
-        # Optional: return HttpResponse with error details (only temporarily for debugging)
-        return HttpResponse(f"Error in home view: {e}", status=500)
+    except Exception:
+        error_message = traceback.format_exc()  # get full traceback as string
+        # Log it as well
+        print(error_message)
+        return HttpResponse(f"<pre>Error in home view:\n{error_message}</pre>", status=500)
+
 
 
 # Logout view
